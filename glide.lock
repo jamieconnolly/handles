@@ -1,0 +1,8 @@
+hash: 6f3da817332b2eb6cf5e724efd1bc7e218e2f0f222a768618a3a682946c4d903
+updated: 2016-09-29T16:22:32.69792992+01:00
+imports:
+- name: github.com/jamieconnolly/mondas
+  version: e882c511608533b9b3ea7caea345b4d1eac684bc
+- name: github.com/kardianos/osext
+  version: c2c54e542fb797ad986b31721e1baedf214ca413
+testImports: []
