@@ -1,8 +1,12 @@
-hash: 6f3da817332b2eb6cf5e724efd1bc7e218e2f0f222a768618a3a682946c4d903
-updated: 2016-09-29T16:22:32.69792992+01:00
+hash: 02a0430cbf82b8388108235c1201591dc63de61eb76fddbd080462c4682ecb48
+updated: 2016-10-26T12:39:10.535841239+01:00
 imports:
 - name: github.com/jamieconnolly/mondas
-  version: e882c511608533b9b3ea7caea345b4d1eac684bc
+  version: 7ca863c5e2c68619d137302522f966d9325c6020
 - name: github.com/kardianos/osext
   version: c2c54e542fb797ad986b31721e1baedf214ca413
+- name: github.com/texttheater/golang-levenshtein
+  version: 1298e830a5c134c6830b6d472b7b81faa9492c0a
+  subpackages:
+  - levenshtein
 testImports: []
