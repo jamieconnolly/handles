@@ -1,0 +1,67 @@
+#!/bin/bash
+# Usage: handles-bootstrap
+# Summary: Make sure all local dependencies are resolved
+
+set -e
+
+if [ -f ".gitmodules" ]; then
+  echo "==> Cloning into submodules…"
+  git submodule update --init --recursive
+fi
+
+if [ -f "Brewfile" ] && [ "$(uname -s)" = "Darwin" ]; then
+  brew bundle check &>/dev/null || {
+    echo "==> Installing Homebrew dependencies…"
+    brew bundle
+  }
+fi
+
+# Bootstrap a Node project
+
+if [ -n "$(nodenv version-file "$PWD" 2>/dev/null)" ] && [ -z "$(nodenv version-name 2>/dev/null)" ]; then
+  echo "==> Installing Node…"
+  nodenv install --skip-existing
+fi
+
+if [ -f "package.json" ]; then
+  echo "==> Installing Node packages…"
+  npm install
+fi
+
+# Bootstrap a Python project
+
+if [ -n "$(pyenv version-file "$PWD" 2>/dev/null)" ] && [ -z "$(pyenv version-name 2>/dev/null)" ]; then
+  echo "==> Installing Python…"
+  pyenv install --skip-existing
+fi
+
+if [ -f "requirements.txt" ]; then
+  if [ -z "$(pyenv virtualenv-name 2>/dev/null)" ]; then
+    VIRTUALENV_NAME="$(pyenv virtualenv-local 2>/dev/null || true)"
+
+    if [ -z "$VIRTUALENV_NAME" ]; then
+      VIRTUALENV_NAME="${PWD##*/}"
+    fi
+
+    echo "==> Creating isolated Python environment…"
+    pyenv virtualenv "$VIRTUALENV_NAME"
+    pyenv virtualenv-local "$VIRTUALENV_NAME"
+  fi
+
+  echo "==> Installing Python packages…"
+  pip install -r requirements.txt
+fi
+
+# Bootstrap a Ruby project
+
+if [ -n "$(rbenv version-file "$PWD" 2>/dev/null)" ] && [ -z "$(rbenv version-name 2>/dev/null)" ]; then
+  echo "==> Installing Ruby…"
+  rbenv install --skip-existing
+fi
+
+if [ -f "Gemfile" ]; then
+  echo "==> Installing Ruby gems…"
+  bundle check &>/dev/null || {
+    bundle install --without production
+  }
+fi
