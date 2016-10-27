@@ -35,7 +35,7 @@ if [ -n "$(pyenv version-file "$PWD" 2>/dev/null)" ] && [ -z "$(pyenv version-na
   pyenv install --skip-existing
 fi
 
-if [ -f "requirements.txt" ]; then
+if [ -f "requirements-dev.txt" ] || [ -f "requirements.txt" ] || [ -f "setup.py" ]; then
   if [ -z "$(pyenv virtualenv-name 2>/dev/null)" ]; then
     VIRTUALENV_NAME="$(pyenv virtualenv-local 2>/dev/null || true)"
 
@@ -49,7 +49,14 @@ if [ -f "requirements.txt" ]; then
   fi
 
   echo "==> Installing Python packages…"
-  pip install -r requirements.txt
+  if [ -f "setup.py" ]; then
+    pip install -e .
+    pip install .[dev]
+  elif [ -f "requirements-dev.txt" ]; then
+    pip install -r requirements-dev.txt
+  elif [ -f "requirements.txt" ]; then
+    pip install -r requirements.txt
+  fi
 fi
 
 # Bootstrap a Ruby project
