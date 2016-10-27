@@ -1,14 +1,17 @@
 NAME = handles
+VERSION = $(shell git describe --tags 2>/dev/null | cut -d - -f 1,2 | sed 's/^v//' | tr - .)
 
-DESTDIR ?= /usr/local/opt/$(NAME)
-BINDIR ?= $(DESTDIR)/bin
-LIBEXECDIR ?= $(DESTDIR)/libexec
+PREFIX ?= /usr/local/opt/$(NAME)
+BINDIR ?= $(PREFIX)/bin
+LIBEXECDIR ?= $(PREFIX)/libexec
 
 all: build
 
+LDFLAGS = -ldflags "-X=github.com/jamieconnolly/mondas.Version=$(VERSION)"
+
 bin/$(NAME):
 	@mkdir -p $(dir $@)
-	go build -o $@ main.go
+	go build -o $@ $(LDFLAGS) main.go
 
 build: clean bin/$(NAME)
 
@@ -23,7 +26,7 @@ install: build
 	@ln -sv $(BINDIR)/$(NAME) /usr/local/bin/$(NAME)
 
 uninstall:
-	@rm -frv $(DESTDIR)
+	@rm -frv $(PREFIX)
 	@rm -fv /usr/local/bin/$(NAME)
 
 .PHONY: all build clean install uninstall
