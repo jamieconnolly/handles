@@ -7,7 +7,7 @@ LIBEXECDIR ?= $(PREFIX)/libexec
 
 all: build
 
-LDFLAGS = -ldflags "-X=github.com/jamieconnolly/mondas.Version=$(VERSION)"
+LDFLAGS = -ldflags "-X=main.Version=$(VERSION)"
 
 bin/$(NAME):
 	@mkdir -p $(dir $@)
