@@ -1,0 +1,38 @@
+#!/bin/bash
+# Usage: handles-get [<user>/]<repository>
+# Summary: Download a project from GitHub
+
+set -e
+
+PROJECT="$1"
+
+if [[ "$PROJECT" =~ ^[A-Za-z0-9][A-Za-z0-9-]*\/[A-Za-z0-9_.][A-Za-z0-9_.-]*$ ]]; then
+  REPO_NAME="${PROJECT#*/}"
+  REPO_OWNER="${PROJECT%%/*}"
+elif [[ "$PROJECT" =~ ^[A-Za-z0-9_.][A-Za-z0-9_.-]*$ ]]; then
+  REPO_NAME=$PROJECT
+  REPO_OWNER="$(git config github.user)"
+elif [ -n "$PROJECT" ]; then
+  echo "!!! Error: invalid argument: ${PROJECT}" >&2
+  exit 1
+else
+  handles help get >&2
+  exit 1
+fi
+
+REPO_URL="https://github.com/${REPO_OWNER}/${REPO_NAME}"
+
+if git ls-remote "$REPO_URL" &>/dev/null; then
+  TARGET_DIR="${PROJECTS_HOME:-$HOME}/${REPO_OWNER}/${REPO_NAME}"
+
+  if [ ! -d "$TARGET_DIR" ]; then
+    echo "==> Fetching ${REPO_OWNER}/${REPO_NAME} from GitHub…"
+    git clone "$REPO_URL" "$TARGET_DIR"
+  else
+    echo "!!! Error: ${TARGET_DIR} already exists." >&2
+    exit 1
+  fi
+else
+  echo "!!! Error: repository ${REPO_OWNER}/${REPO_NAME} doesn't exist." >&2
+  exit 1
+fi
