@@ -1,0 +1,9 @@
+#!/bin/bash
+# Usage: handles-setup
+# Summary: Set up the project to run for the first time
+
+set -e
+
+handles-bootstrap
+
+echo "==> Your project is now ready to go!"
