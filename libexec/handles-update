@@ -1,0 +1,7 @@
+#!/bin/bash
+# Usage: handles-update
+# Summary: Update the project to run for its current version
+
+set -e
+
+handles-bootstrap
