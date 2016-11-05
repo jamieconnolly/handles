@@ -3,5 +3,6 @@
 # Summary: Update the project to run for its current version
 
 set -e
+cd "$(git rev-parse --show-toplevel)"
 
 handles-bootstrap
