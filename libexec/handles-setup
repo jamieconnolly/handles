@@ -6,4 +6,9 @@ set -e
 
 handles-bootstrap
 
+if [ -f ".env.example" ]; then
+  echo "==> Creating .env file…"
+  cp .env.example .env
+fi
+
 echo "==> Your project is now ready to go!"
