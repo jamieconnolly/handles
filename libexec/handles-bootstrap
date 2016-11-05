@@ -3,6 +3,7 @@
 # Summary: Resolve all dependencies that the project requires to run
 
 set -e
+cd "$(git rev-parse --show-toplevel)"
 
 if [ -f ".gitmodules" ]; then
   echo "==> Cloning into submodules…"
