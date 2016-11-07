@@ -19,6 +19,12 @@ if [ -f "nginx.conf" ] && [ "$(uname -s)" = "Darwin" ]; then
     echo "!!! Error: failed to (re)start nginx!" >&2
     exit 1
   fi
+
+  if [ "$(readlink /etc/resolver 2>/dev/null)" != "$(brew --prefix)/etc/resolver" ]; then
+    echo "==> Resolving *.dev to 127.0.0.1…"
+    sudo -p "Please enter your password (for sudo access):" true
+    sudo ln -s $(brew --prefix)/etc/resolver /etc
+  fi
 fi
 
 echo "==> Your project is now ready to go!"
