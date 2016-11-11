@@ -7,23 +7,42 @@ cd "$(git rev-parse --show-toplevel)"
 
 handles-bootstrap
 
+if [ "$(uname -s)" = "Darwin" ]; then
+  PREFIX="$(brew --prefix)"
+fi
+
+export LOG_DIR="${PREFIX}/var/log"
+export PROJECT="${PWD##*/}"
+export PROJECT_ROOT="$PWD"
+export SOCKET_DIR="${PREFIX}/var/run"
+
 if [ -f ".env.example" ]; then
   echo "==> Copying environment file…"
   cp .env.example .env
 fi
 
+if [ -f "nginx.conf.erb" ]; then
+  export NGINX_LOG_DIR="${LOG_DIR}/nginx"
+
+  echo "==> Creating nginx server configuration file…"
+  erb nginx.conf.erb > nginx.conf
+fi
+
 if [ -f "nginx.conf" ] && [ "$(uname -s)" = "Darwin" ]; then
-  echo "==> Symlinking nginx server configuration file…"
-  ln -sf nginx.conf "$(brew --prefix)/etc/nginx/servers/$(basename $PWD).conf"
-  if ! brew services restart nginx &>/dev/null; then
-    echo "!!! Error: failed to (re)start nginx!" >&2
+  echo "==> Enabling nginx server configuration file…"
+  ln -sf "${PROJECT_ROOT}/nginx.conf" "${PREFIX}/etc/nginx/servers/${PROJECT}.conf"
+
+  echo "==> Reloading nginx…"
+  if ! brew services reload nginx &>/dev/null; then
+    echo "!!! Error: failed to reload nginx!" >&2
     exit 1
   fi
 
-  if [ "$(readlink /etc/resolver 2>/dev/null)" != "$(brew --prefix)/etc/resolver" ]; then
+  if [ "$(readlink /etc/resolver 2>/dev/null)" != "${PREFIX}/etc/resolver" ]; then
     echo "==> Resolving *.dev to 127.0.0.1…"
     sudo -p "Please enter your password (for sudo access):" true
-    sudo ln -s $(brew --prefix)/etc/resolver /etc
+    sudo rm -rf /etc/resolver
+    sudo ln -sf "${PREFIX}/etc/resolver" /etc/resolver
   fi
 fi
 
