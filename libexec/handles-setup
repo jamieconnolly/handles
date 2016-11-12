@@ -44,6 +44,15 @@ if [ -f "nginx.conf" ] && [ "$(uname -s)" = "Darwin" ]; then
     sudo rm -rf /etc/resolver
     sudo ln -sf "${PREFIX}/etc/resolver" /etc/resolver
   fi
+
+  if ! brew services list | grep "^launch_socket_server.*started"; then
+    echo "==> Starting launch_socket_server…"
+    sudo -p "Please enter your password (for sudo access):" true
+    if ! sudo brew services start launch_socket_server &>/dev/null; then
+      echo "!!! Error: failed to restart launch_socket_server!" >&2
+      exit 1
+    fi
+  fi
 fi
 
 echo "==> Your project is now ready to go!"
