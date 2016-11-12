@@ -1,0 +1,13 @@
+#!/bin/bash
+# Usage: handles-start
+# Summary: Start the project locally
+
+set -e
+cd "$(git rev-parse --show-toplevel)"
+
+handles-update
+
+test -f "Procfile.local" &&
+  PROCFILE="Procfile.local"
+
+exec forego start -f "${PROCFILE:="Procfile"}"
