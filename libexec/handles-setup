@@ -26,14 +26,12 @@ if [ -f ".env.example" ]; then
   done
 fi
 
-if [ -f "nginx.conf.erb" ]; then
+if [ -f "nginx.conf.erb" ] && [ "$(uname -s)" = "Darwin" ]; then
   export NGINX_LOG_DIR="${LOG_DIR}/nginx"
 
   echo "==> Creating nginx server configuration file…"
   erb nginx.conf.erb > nginx.conf
-fi
 
-if [ -f "nginx.conf" ] && [ "$(uname -s)" = "Darwin" ]; then
   echo "==> Enabling nginx server configuration file…"
   ln -sf "${PROJECT_ROOT}/nginx.conf" "${PREFIX}/etc/nginx/servers/${PROJECT}.conf"
 
