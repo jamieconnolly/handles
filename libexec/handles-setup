@@ -22,7 +22,7 @@ if [ -f ".env.example" ]; then
   echo "==> Creating environment file…"
   cp .env.example .env
   for var in "LOG_DIR" "PROJECT_ROOT" "SECRET_KEY" "SOCKET_DIR"; do
-    sed -i "" "s/^$var=$/$var=\"$(eval echo "\$$var" | sed -e 's/[\/&]/\\&/g')\"/" .env
+    sed -i "" "s/^$var=$/$var=$(eval echo "\$$var" | sed -e 's/[\/&]/\\&/g')/" .env
   done
 fi
 
