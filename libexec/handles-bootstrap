@@ -32,7 +32,7 @@ if [ -n "$(pyenv version-file "$PWD" 2>/dev/null)" ]; then
     VIRTUALENV_NAME="$(pyenv virtualenv-local 2>/dev/null || true)"
 
     if [ -z "$VIRTUALENV_NAME" ]; then
-      VIRTUALENV_NAME="${PWD##*/}"
+      VIRTUALENV_NAME="$(echo $PWD | sed -e "s:^${PROJECTS_HOME}\\(/${GITHUB_USER}\\)\{0,1\}/\{0,1\}::g;s:\/:-:g")"
     fi
 
     echo "==> Setting up Python environment…"
