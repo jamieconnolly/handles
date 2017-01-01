@@ -1,0 +1,25 @@
+#!/bin/bash
+# Usage: handles-setup-dotenv [<source_file>]
+# Summary: Generate an environment file
+
+set -e
+cd "$(git rev-parse --show-toplevel)"
+
+SOURCE_FILE="${1-".env.example"}"
+
+if [ -z "$SOURCE_FILE" ]; then
+  handles help setup-dotenv >&2
+  exit 1
+elif [ ! -f "$SOURCE_FILE" ]; then
+  echo "!!! Error: invalid source file: ${SOURCE_FILE}" >&2
+  exit 1
+fi
+
+cp $SOURCE_FILE .env
+
+SECRET_KEY="$(openssl rand -base64 48)"
+sed -i -e "s/^SECRET_KEY=$/SECRET_KEY=$(echo $SECRET_KEY | sed -e 's/[\/&]/\\&/g')/" .env
+
+for var in $(env | sed -ne "s/\([^=]*\)=.*/\1/p" | uniq); do
+  sed -i -e "s/^$var=$/$var=$(eval echo "\$$var" | sed -e 's/[\/&]/\\&/g')/" .env
+done
