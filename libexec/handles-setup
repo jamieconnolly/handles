@@ -11,8 +11,9 @@ if [ "$(uname -s)" = "Darwin" ]; then
   PREFIX="$(brew --prefix)"
 fi
 
+PROJECT_NAME="$(echo $PWD | sed -e "s:^${PROJECTS_HOME}\\(/${GITHUB_USER}\\)\{0,1\}/\{0,1\}::g;s:\/:-:g")"
+
 export LOG_DIR="${PREFIX}/var/log"
-export PROJECT_NAME="$(echo $PWD | sed -e "s:^${PROJECTS_HOME}\\(/${GITHUB_USER}\\)\{0,1\}/\{0,1\}::g;s:\/:-:g")"
 export PROJECT_DIR="$PWD"
 export SOCKET_DIR="${PREFIX}/var/run"
 
@@ -22,6 +23,8 @@ if [ -f ".env.example" ]; then
 fi
 
 if [ -f "nginx.conf.erb" ] && [ "$(uname -s)" = "Darwin" ]; then
+  export NGINX_LOG_DIR="${LOG_DIR}/nginx"
+
   echo "==> Generating nginx server configuration file…"
   handles-setup-nginx-conf $PROJECT_NAME
 fi
