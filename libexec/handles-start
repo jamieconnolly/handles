@@ -7,7 +7,13 @@ cd "$(git rev-parse --show-toplevel)"
 
 handles-update
 
-test -f "Procfile.local" &&
-  PROCFILE="Procfile.local"
+test -f "Procfile.local" && PROCFILE="Procfile.local"
 
-exec forego start -f "${PROCFILE:="Procfile"}"
+if [ "$(uname -s)" = "Darwin" ]; then
+  if ! command -v forego &>/dev/null; then
+    echo "!!! Error: forego is not installed" >&2
+    exit 1
+  fi
+
+  exec forego start -f "${PROCFILE:="Procfile"}"
+fi
