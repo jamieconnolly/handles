@@ -25,10 +25,20 @@ erb $SOURCE_FILE > $OUTPUT_FILE
 if [ "$(uname -s)" = "Darwin" ]; then
   PREFIX="$(brew --prefix)"
 
+  if ! brew ls --versions launchdns &>/dev/null; then
+    echo "!!! Error: launchdns is not installed" >&2
+    exit 1
+  fi
+
   if [ "$(readlink /etc/resolver 2>/dev/null)" != "${PREFIX}/etc/resolver" ]; then
     sudo -p "Please enter your password to set up *.dev:" true
     sudo rm -rf /etc/resolver
     sudo ln -sf "${PREFIX}/etc/resolver" /etc/resolver
+  fi
+
+  if ! brew ls --versions launch_socket_server &>/dev/null; then
+    echo "!!! Error: launch_socket_server is not installed" >&2
+    exit 1
   fi
 
   if ! brew services list | grep "^launch_socket_server.*started" &>/dev/null; then
