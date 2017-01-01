@@ -17,12 +17,12 @@ if [ -f "Brewfile" ] && [ "$(uname -s)" = "Darwin" ]; then
   }
 fi
 
-if [ -n "$(nodenv version-file "$PWD" 2>/dev/null)" ] && [ -z "$(nodenv version-name 2>/dev/null)" ]; then
+if [ -f ".node-version" ] && [ -z "$(nodenv version-name 2>/dev/null)" ]; then
   echo "==> Installing Node…"
   nodenv install --skip-existing
 fi
 
-if [ -n "$(pyenv version-file "$PWD" 2>/dev/null)" ]; then
+if [ -f ".python-version" ]; then
   if [ -z "$(pyenv version-name 2>/dev/null)" ]; then
     echo "==> Installing Python…"
     pyenv install --skip-existing
@@ -41,7 +41,7 @@ if [ -n "$(pyenv version-file "$PWD" 2>/dev/null)" ]; then
   fi
 fi
 
-if [ -n "$(rbenv version-file "$PWD" 2>/dev/null)" ] && [ -z "$(rbenv version-name 2>/dev/null)" ]; then
+if [ -f ".ruby-version" ] && [ -z "$(rbenv version-name 2>/dev/null)" ]; then
   echo "==> Installing Ruby…"
   rbenv install --skip-existing
 
