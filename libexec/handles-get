@@ -4,16 +4,16 @@
 
 set -e
 
-PROJECT="$1"
+PROJECT_NAME="$1"
 
-if [[ "$PROJECT" =~ ^[A-Za-z0-9][A-Za-z0-9-]*\/[A-Za-z0-9_.][A-Za-z0-9_.-]*$ ]]; then
-  REPO_NAME="${PROJECT#*/}"
-  REPO_OWNER="${PROJECT%%/*}"
-elif [[ "$PROJECT" =~ ^[A-Za-z0-9_.][A-Za-z0-9_.-]*$ ]]; then
-  REPO_NAME=$PROJECT
+if [[ "$PROJECT_NAME" =~ ^[A-Za-z0-9][A-Za-z0-9-]*\/[A-Za-z0-9_.][A-Za-z0-9_.-]*$ ]]; then
+  REPO_NAME="${PROJECT_NAME#*/}"
+  REPO_OWNER="${PROJECT_NAME%%/*}"
+elif [[ "$PROJECT_NAME" =~ ^[A-Za-z0-9_.][A-Za-z0-9_.-]*$ ]]; then
+  REPO_NAME=$PROJECT_NAME
   REPO_OWNER="$(git config github.user)"
-elif [ -n "$PROJECT" ]; then
-  echo "!!! Error: invalid argument: ${PROJECT}" >&2
+elif [ -n "$PROJECT_NAME" ]; then
+  echo "!!! Error: invalid project: ${PROJECT_NAME}" >&2
   exit 1
 else
   handles help get >&2
@@ -29,10 +29,10 @@ if git ls-remote "$REPO_URL" &>/dev/null; then
     echo "==> Fetching ${REPO_OWNER}/${REPO_NAME} from GitHub…"
     git clone "$REPO_URL" "$TARGET_DIR"
   else
-    echo "!!! Error: ${TARGET_DIR} already exists." >&2
+    echo "!!! Error: ${TARGET_DIR} already exists" >&2
     exit 1
   fi
 else
-  echo "!!! Error: repository ${REPO_OWNER}/${REPO_NAME} doesn't exist." >&2
+  echo "!!! Error: repository ${REPO_OWNER}/${REPO_NAME} doesn't exist" >&2
   exit 1
 fi
