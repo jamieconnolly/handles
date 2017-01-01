@@ -17,13 +17,8 @@ export PROJECT_ROOT="$PWD"
 export SOCKET_DIR="${PREFIX}/var/run"
 
 if [ -f ".env.example" ]; then
-  export SECRET_KEY="$(openssl rand -base64 64 | head -c64)"
-
-  echo "==> Creating environment file…"
-  cp .env.example .env
-  for var in "LOG_DIR" "PROJECT_ROOT" "SECRET_KEY" "SOCKET_DIR"; do
-    sed -i "" "s/^$var=$/$var=$(eval echo "\$$var" | sed -e 's/[\/&]/\\&/g')/" .env
-  done
+  echo "==> Generating environment file…"
+  handles-setup-dotenv
 fi
 
 if [ -f "nginx.conf.erb" ] && [ "$(uname -s)" = "Darwin" ]; then
