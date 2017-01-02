@@ -1,26 +1,29 @@
 #!/bin/bash
-# Usage: handles-setup-nginx-conf <project_name> [<source_file>]
+# Usage: handles-setup-nginx-conf <project_name> [<input_file>]
 # Summary: Generate an nginx server configuration file
 
 set -e
 cd "$(git rev-parse --show-toplevel)"
 
+INPUT_FILE="${2-"nginx.conf.erb"}"
+OUTPUT_FILE="${PWD}/${INPUT_FILE//.erb}"
 PROJECT_NAME="$1"
-SOURCE_FILE="${2-"nginx.conf.erb"}"
 
-if [ -z "$PROJECT_NAME" ] || [ -z "$SOURCE_FILE" ]; then
+if [ -z "$PROJECT_NAME" ] || [ -z "$INPUT_FILE" ]; then
   handles help setup-nginx-conf >&2
   exit 1
-elif [ ! -f "$SOURCE_FILE" ] || [[ "$SOURCE_FILE" != *.erb ]]; then
-  echo "!!! Error: invalid source file: ${SOURCE_FILE}" >&2
+elif [ ! -f "$INPUT_FILE" ] || [[ "$INPUT_FILE" != *.erb ]]; then
+  echo "!!! Error: invalid input file: ${INPUT_FILE}" >&2
   exit 1
 elif ! command -v nginx &>/dev/null; then
   echo "!!! Error: nginx is not installed" >&2
   exit 1
 fi
 
-OUTPUT_FILE="${PWD}/${SOURCE_FILE//.erb}"
-erb $SOURCE_FILE > $OUTPUT_FILE
+if ! erb $INPUT_FILE > $OUTPUT_FILE; then
+  echo "!!! Error: failed to generate nginx configuration file" >&2
+  exit 1
+fi
 
 if [ "$(uname -s)" = "Darwin" ]; then
   PREFIX="$(brew --prefix)"
