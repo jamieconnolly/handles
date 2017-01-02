@@ -17,7 +17,7 @@ fi
 
 cp $INPUT_FILE .env
 
-sed -i -e "s/^SECRET_KEY=$/SECRET_KEY=$(echo $(openssl rand -base64 48) | sed -e 's/[\/&]/\\&/g')/" .env
+sed -e "s/^SECRET_KEY=$/SECRET_KEY=$(echo $(openssl rand -base64 48) | sed -e 's/[\/&]/\\&/g')/" -i "" .env
 for var in $(env | sed -ne "s/\([^=]*\)=.*/\1/p" | uniq); do
-  sed -i -e "s/^$var=$/$var=$(eval echo "\$$var" | sed -e 's/[\/&]/\\&/g')/" .env
+  sed -e "s/^$var=$/$var=$(eval echo "\$$var" | sed -e 's/[\/&]/\\&/g')/" -i "" .env
 done
