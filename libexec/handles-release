@@ -1,0 +1,55 @@
+#!/bin/bash
+# Usage: handles-release <version>
+# Summary: Tag and push a release
+
+set -e
+cd "$(git rev-parse --show-toplevel)"
+test -f "bin/release" && exec "bin/release" "$@"
+
+VERSION="$1"
+
+if [ -z "$VERSION" ]; then
+  handles help release >&2
+  exit 1
+elif ! echo "$VERSION" | grep -q -E "^v\d(\.\d(\.\d)?)?\$"; then
+  echo "!!! Error: invalid version: ${VERSION}" >&2
+  exit 1
+elif [ -z "$(git symbolic-ref HEAD)" ]; then
+  echo "!!! Error: your checkout isn't on a branch" >&2
+  exit 1
+elif [ "$(git symbolic-ref HEAD)" != "refs/heads/master" ]; then
+  echo "!!! Error: your checkout isn't on master" >&2
+  exit 1
+elif ! git fetch --quiet --tags origin; then
+  echo "!!! Error: running 'git fetch' failed" >&2
+  exit 1
+elif git describe --exact-match "$VERSION" &>/dev/null; then
+  echo "!!! Error: ${VERSION} tag already exists" >&2
+  exit 1
+elif [ $(git rev-list --count $(git describe origin/master --match="v*")..HEAD) == "0" ]; then
+  echo "!!! Error: there have been no commits since the last version" >&2
+  exit 1
+elif [ $(git rev-list --count HEAD..origin/master) != "0" ]; then
+  echo "!!! Error: there have been upstream changes on master" >&2
+  exit 1
+fi
+
+echo "==> Tagging version…"
+if ! git tag -s "$VERSION" -m ":bookmark: Tag ${VERSION}" &>/dev/null; then
+  echo "!!! Error: failed to tag version" >&2
+  exit 1
+fi
+
+echo "==> Pushing master to origin…"
+if ! git push origin master &>/dev/null; then
+  echo "!!! Error: failed to push to master" >&2
+  exit 1
+fi
+
+echo "==> Pushing tag to origin…"
+if ! git push origin "$VERSION" &>/dev/null; then
+  echo "!!! Error: failed to push tag to origin" >&2
+  exit 1
+fi
+
+echo "==> Successfully released ${VERSION}!"
