@@ -27,7 +27,7 @@ if [ -f "nginx.conf.erb" ] && [ "$(uname -s)" = "Darwin" ]; then
   export NGINX_LOG_DIR="${LOG_DIR}/nginx"
 
   echo "==> Generating nginx server configuration file…"
-  handles-setup-nginx-conf $PROJECT_NAME
+  handles-setup-nginx-conf "$PROJECT_NAME"
 fi
 
 echo "==> Your project is now ready to go!"

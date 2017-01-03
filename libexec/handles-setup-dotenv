@@ -15,7 +15,7 @@ elif [ ! -f "$INPUT_FILE" ]; then
   exit 1
 fi
 
-cp $INPUT_FILE .env
+cp "$INPUT_FILE" .env
 
 sed -e "s/^SECRET_KEY=$/SECRET_KEY=$(echo $(openssl rand -base64 48) | sed -e 's/[\/&]/\\&/g')/" -i "" .env
 for var in $(env | sed -ne "s/\([^=]*\)=.*/\1/p" | uniq); do

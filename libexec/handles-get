@@ -10,7 +10,7 @@ if [[ "$PROJECT_NAME" =~ ^[A-Za-z0-9][A-Za-z0-9-]*\/[A-Za-z0-9_.][A-Za-z0-9_.-]*
   REPO_NAME="${PROJECT_NAME#*/}"
   REPO_OWNER="${PROJECT_NAME%%/*}"
 elif [[ "$PROJECT_NAME" =~ ^[A-Za-z0-9_.][A-Za-z0-9_.-]*$ ]]; then
-  REPO_NAME=$PROJECT_NAME
+  REPO_NAME="$PROJECT_NAME"
   REPO_OWNER="$(git config github.user)"
 elif [ -n "$PROJECT_NAME" ]; then
   echo "!!! Error: invalid project: ${PROJECT_NAME}" >&2
