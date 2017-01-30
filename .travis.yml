@@ -1,0 +1,20 @@
+language: go
+
+go:
+  - 1.7
+
+before_install:
+  - go get github.com/Masterminds/glide
+
+install: glide install
+
+addons:
+  apt:
+    sources:
+      - debian-sid
+    packages:
+      - shellcheck
+
+cache:
+  directories:
+    - $HOME/.glide/cache
