@@ -26,10 +26,10 @@ elif ! git fetch --quiet --tags origin; then
 elif git describe --exact-match "$VERSION" &>/dev/null; then
   echo "!!! Error: ${VERSION} tag already exists" >&2
   exit 1
-elif [ $(git rev-list --count $(git tag | grep '^v' | sort | tail -1)..HEAD) == "0" ]; then
+elif [ "$(git rev-list --count "$(git tag | grep '^v' | sort | tail -1)"..HEAD)" == "0" ]; then
   echo "!!! Error: there have been no commits since the last version" >&2
   exit 1
-elif [ $(git rev-list --count HEAD..origin/master) != "0" ]; then
+elif [ "$(git rev-list --count HEAD..origin/master)" != "0" ]; then
   echo "!!! Error: there have been upstream changes on master" >&2
   exit 1
 fi
