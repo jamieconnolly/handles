@@ -1,10 +1,18 @@
-hash: 3683f0994cf1d5ac2a7099b53c9c1220c1baccd1743f9020bb0e1af3476c223f
-updated: 2016-10-27T16:10:29.299481088+01:00
+hash: 66597afe7210f90faf088a26f9162b557cdb9db9082628af04abd8d5ea8468e1
+updated: 2017-01-30T10:39:26.280137033Z
 imports:
 - name: github.com/jamieconnolly/mondas
-  version: 9c235abee968ebf8f228ab10adb2b3e7f3f3af1b
+  version: 9a99803b1c2a8bc13bb7e68a29263440d356e994
+  subpackages:
+  - cli
+  - commands
+  - utils
 - name: github.com/kardianos/osext
   version: c2c54e542fb797ad986b31721e1baedf214ca413
+- name: github.com/kr/text
+  version: 7cafcd837844e784b526369c9bce262804aebc60
+- name: github.com/renstrom/dedent
+  version: 020d11c3b9c0c7a3c2efcc8e5cf5b9ef7bcea21f
 - name: github.com/texttheater/golang-levenshtein
   version: 1298e830a5c134c6830b6d472b7b81faa9492c0a
   subpackages:
