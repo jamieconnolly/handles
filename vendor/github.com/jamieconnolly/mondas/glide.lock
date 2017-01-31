@@ -1,0 +1,26 @@
+hash: 88c3fbf1b965121fea8305abc4ff1c54b0813fd9348df924bb35a184a6bfb528
+updated: 2017-01-23T14:39:12.120681718Z
+imports:
+- name: github.com/kardianos/osext
+  version: c2c54e542fb797ad986b31721e1baedf214ca413
+- name: github.com/kr/text
+  version: 7cafcd837844e784b526369c9bce262804aebc60
+- name: github.com/renstrom/dedent
+  version: 020d11c3b9c0c7a3c2efcc8e5cf5b9ef7bcea21f
+- name: github.com/texttheater/golang-levenshtein
+  version: 1298e830a5c134c6830b6d472b7b81faa9492c0a
+  subpackages:
+  - levenshtein
+testImports:
+- name: github.com/davecgh/go-spew
+  version: 6d212800a42e8ab5c146b8ace3490ee17e5225f9
+  subpackages:
+  - spew
+- name: github.com/pmezard/go-difflib
+  version: d8ed2627bdf02c080bf22230dbb337003b7aba2d
+  subpackages:
+  - difflib
+- name: github.com/stretchr/testify
+  version: 69483b4bd14f5845b5a1e55bca19e954e827f1d0
+  subpackages:
+  - assert

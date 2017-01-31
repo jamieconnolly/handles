@@ -1,0 +1,3 @@
+#!/bin/bash
+echo "Failed!" >&2
+exit 42
