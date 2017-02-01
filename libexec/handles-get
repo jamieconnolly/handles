@@ -1,5 +1,5 @@
 #!/bin/bash
-# Usage: handles-get [<user>/]<repository>
+# Usage: handles get [<user>/]<repository>
 # Summary: Download a project from GitHub
 
 set -e

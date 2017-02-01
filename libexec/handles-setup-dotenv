@@ -1,5 +1,5 @@
 #!/bin/bash
-# Usage: handles-setup-dotenv [<input_file>]
+# Usage: handles setup-dotenv [<input_file>]
 # Summary: Generate an environment file
 # Hidden: true
 
