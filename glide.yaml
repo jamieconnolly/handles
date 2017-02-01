@@ -1,4 +1,4 @@
 package: github.com/jamieconnolly/handles
 import:
   - package: github.com/jamieconnolly/mondas
-    version: 508a908f68c8a0e75a6f2e099e92df464cafc667
+    version: abcb15ee33e84d18f48defb6d2e564674f56131d

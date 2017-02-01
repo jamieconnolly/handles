@@ -9,20 +9,21 @@ import (
 	"github.com/kardianos/osext"
 )
 
-// CommandLine is the default application.
-var CommandLine = New(filepath.Base(os.Args[0]), Version)
+// Commands is a list of commands for the default application to use.
+var Commands cli.Commands
 
-// Version is the version used for the default application.
-var Version string
-
-// AddCommand adds a command to the default application.
+// AddCommand adds the command to the default application.
 func AddCommand(cmd *cli.Command) {
-	CommandLine.AddCommand(cmd)
+	Commands.Add(cmd)
 }
 
-// New creates a new application with some default commands.
-func New(name string, version string) *cli.App {
+// Run is the main entry point for the command-line interface.
+// It creates an application with some reasonable defaults
+// and then runs it using the arguments from os.Args.
+func Run(name string, version string) {
 	app := cli.NewApp(name, version)
+
+	app.Commands = Commands
 
 	if exePath, err := osext.Executable(); err == nil {
 		app.ExecPath = filepath.Join(exePath, "../../libexec")
@@ -32,10 +33,5 @@ func New(name string, version string) *cli.App {
 	app.AddCommand(commands.HelpCommand)
 	app.AddCommand(commands.VersionCommand)
 
-	return app
-}
-
-// Run runs the default application using the arguments from os.Args.
-func Run() {
-	cli.Exit(CommandLine.Run(os.Args[1:]))
+	cli.Exit(app.Run(os.Args[1:]))
 }

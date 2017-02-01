@@ -2,6 +2,11 @@ package main
 
 import "github.com/jamieconnolly/mondas"
 
+var (
+	Name string
+	Version string
+)
+
 func main() {
-	mondas.Run()
+	mondas.Run(Name, Version)
 }

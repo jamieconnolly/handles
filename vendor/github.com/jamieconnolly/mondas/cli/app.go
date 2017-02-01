@@ -25,7 +25,7 @@ type App struct {
 	initialized bool
 }
 
-// NewApp creates a new App with some reasonable defaults.
+// NewApp creates a new App object.
 func NewApp(name string, version string) *App {
 	return &App{
 		ExecPrefix: name + "-",
