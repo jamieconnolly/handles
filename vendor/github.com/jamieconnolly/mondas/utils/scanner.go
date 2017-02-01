@@ -14,7 +14,7 @@ func ScanMetadata(data []byte, atEOF bool) (advance int, token []byte, err error
 	if m := metadataRegexp.FindIndex(data); m != nil {
 		data = data[m[0]:m[1]]
 
-		if data[len(data)-1] == '\n' || data[len(data)-1] == '\r' {
+		if data[len(data)-1] == '\n' {
 			data = data[:len(data)-1]
 		}
 
@@ -24,7 +24,7 @@ func ScanMetadata(data []byte, atEOF bool) (advance int, token []byte, err error
 				continue
 			}
 
-			if b == '#' && i > 0 && (data[i-1] == '\n' || data[i-1] == '\r') {
+			if b == '#' && i > 0 && data[i-1] == '\n' {
 				continue
 			}
 

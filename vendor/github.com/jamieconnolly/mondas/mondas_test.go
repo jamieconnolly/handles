@@ -13,19 +13,12 @@ import (
 func TestAddCommand(t *testing.T) {
 	cmd1 := &cli.Command{Name: "one"}
 	cmd2 := &cli.Command{Name: "two"}
-	cmds := cli.Commands{cmd1}
-	mondas.CommandLine = &cli.App{Commands: cmds}
+	mondas.Commands = cli.Commands{cmd1}
 
 	mondas.AddCommand(cmd2)
-	assert.Equal(t, 2, len(mondas.CommandLine.Commands))
-	assert.Equal(t, cmd1.Name, mondas.CommandLine.Commands[0].Name)
-	assert.Equal(t, cmd2.Name, mondas.CommandLine.Commands[1].Name)
-}
-
-func TestNew(t *testing.T) {
-	app := mondas.New("foo", "1.2.3")
-	assert.Equal(t, "foo", app.Name)
-	assert.Equal(t, "1.2.3", app.Version)
+	assert.Equal(t, 2, len(mondas.Commands))
+	assert.Equal(t, cmd1.Name, mondas.Commands[0].Name)
+	assert.Equal(t, cmd2.Name, mondas.Commands[1].Name)
 }
 
 func TestRun(t *testing.T) {
@@ -36,9 +29,8 @@ func TestRun(t *testing.T) {
 	}
 	cli.Stderr = ioutil.Discard
 	cli.Stdout = ioutil.Discard
-	mondas.CommandLine = &cli.App{ExecPrefix: "foo-", Name: "foo"}
 	os.Args = []string{"foo", "bar"}
 
-	mondas.Run()
+	mondas.Run("foo", "1.2.3")
 	assert.Equal(t, "exited", s)
 }
