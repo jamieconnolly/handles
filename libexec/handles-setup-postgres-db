@@ -1,5 +1,5 @@
 #!/bin/bash
-# Usage: handles-setup-postgres-db <db_name>
+# Usage: handles setup-postgres-db <db_name>
 # Summary: Set up a Postgres database
 # Hidden: true
 

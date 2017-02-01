@@ -1,5 +1,5 @@
 #!/bin/bash
-# Usage: handles-setup
+# Usage: handles setup
 # Summary: Set up the project to run for the first time
 
 set -e

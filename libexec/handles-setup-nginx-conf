@@ -1,5 +1,5 @@
 #!/bin/bash
-# Usage: handles-setup-nginx-conf <project_name> [<input_file>]
+# Usage: handles setup-nginx-conf <project_name> [<input_file>]
 # Summary: Generate an nginx server configuration file
 # Hidden: true
 

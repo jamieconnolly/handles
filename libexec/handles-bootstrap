@@ -1,5 +1,5 @@
 #!/bin/bash
-# Usage: handles-bootstrap
+# Usage: handles bootstrap
 # Summary: Resolve all dependencies that the project requires to run
 
 set -e
