@@ -1,8 +1,8 @@
-hash: b7597b6d002047402e755d241d8711a0283a80e7866adde72ec6e01410031973
-updated: 2017-02-02T17:00:12.380280323Z
+hash: d05494938b3d70415d4fba565b600b6ffeb55188dc6a439f635b96878811bff2
+updated: 2017-02-02T17:36:06.160576178Z
 imports:
 - name: github.com/jamieconnolly/mondas
-  version: d3ab5abd6ec161ef5544c38e77db13b0d740cdd0
+  version: 5fe5273a148ec0455bb083f62b71e1ba5e5be042
   subpackages:
   - cli
   - commands

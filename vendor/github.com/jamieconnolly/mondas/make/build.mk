@@ -18,4 +18,4 @@ completions/$(NAME).%:
 	@echo "==> Generating $@…"
 	@mkdir -p $(@D)
 	@cp $(SELF_DIR)../completions/mondas.$* "$@"
-	@sed -e "s/mondas/$(NAME)/g" "$@" | tee "$@" >/dev/null
+	@cat "$@" | sed -e "s/mondas/$(NAME)/g" | tee "$@" >/dev/null
