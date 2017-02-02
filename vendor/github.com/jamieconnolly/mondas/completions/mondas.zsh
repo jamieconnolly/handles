@@ -11,7 +11,7 @@ _arguments -C \
 case $state in
   args)
     args=(${(f)"$(_call_program arguments ${service} completions ${line[@]:0:$((CURRENT-1))} 2>/dev/null)"})
-    _values "${service} arguments" $args && ret=0
+    [[ $#args -gt 0 ]] && _values "${service} arguments" "${args[@]}" && ret=0
     ;;
   cmds)
     cmds=(${(f)"$(_call_program commands ${service} completions 2>/dev/null)"})

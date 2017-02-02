@@ -16,4 +16,4 @@ completions/$(NAME).%:
 	@echo "==> Generating $@…"
 	@mkdir -p $(@D)
 	@cp $(dir $(realpath $(lastword $(MAKEFILE_LIST))))../completions/mondas.$* $@
-	@sed -i "" "s/mondas/$(NAME)/g" $@
+	@sed -i "" -e "s/mondas/$(NAME)/g" $@
