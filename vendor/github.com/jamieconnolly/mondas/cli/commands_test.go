@@ -16,6 +16,7 @@ func TestCommand_Parse_WithExecutable(t *testing.T) {
 	if assert.NoError(t, err) {
 		assert.Equal(t, "Display \"Hello, world!\"", cmd.Summary)
 		assert.Equal(t, "foo bar <baz>", cmd.Usage)
+		assert.True(t, cmd.Completions)
 		assert.True(t, cmd.Hidden)
 		assert.True(t, cmd.Parsed())
 	}

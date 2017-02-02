@@ -22,6 +22,8 @@ type Command struct {
 	Action func(*Context) int
 	// ArgsUsage is the one-line usage message for the command arguments
 	ArgsUsage string
+	// Completions determines if the command provides its own completions
+	Completions bool
 	// Description is the description of the command
 	Description string
 	// Hidden determines if the command is hidden from the help list of commands
@@ -89,11 +91,10 @@ func (c *Command) Run(ctx *Context) int {
 		return 1
 	}
 
-	args := append([]string{c.Path}, ctx.Args...)
 	env := ctx.Env
 	env.Unset("BASH_ENV")
 
-	exeCmd := exec.Command(c.Path, args...)
+	exeCmd := exec.Command(c.Path, ctx.Args...)
 	exeCmd.Env = env.Environ()
 	exeCmd.Stdin = Stdin
 	exeCmd.Stdout = Stdout

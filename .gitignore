@@ -11,5 +11,6 @@
 *.coverprofile
 *.out
 
-# Compiled executables
+# Generated files
 bin/
+completions/

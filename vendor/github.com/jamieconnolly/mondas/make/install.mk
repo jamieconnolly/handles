@@ -1,12 +1,12 @@
-DESTDIR ?= /usr/local
-PREFIX ?= $(DESTDIR)/opt/$(NAME)
-BINDIR ?= $(PREFIX)/bin
-LIBEXECDIR ?= $(PREFIX)/libexec
+PREFIX ?= /usr/local
+DESTDIR ?= $(PREFIX)/opt/$(NAME)
 
 .PHONY: install
 install: build
-	@echo "==> Installing to $(DESTDIR)…"
-	@install -d $(BINDIR) $(LIBEXECDIR)
-	@install -m 0755 -pv bin/$(NAME) $(BINDIR)
-	@install -m 0755 -pv libexec/* $(LIBEXECDIR)
-	@ln -fsv $(BINDIR)/$(NAME) $(DESTDIR)/bin/$(NAME)
+	@echo "==> Installing to $(PREFIX)…"
+	@install -d $(DESTDIR)/bin $(DESTDIR)/completions $(DESTDIR)/libexec
+	@install -m 0755 -pv bin/$(NAME) $(DESTDIR)/bin
+	@install -m 0755 -pv completions/* $(DESTDIR)/completions
+	@install -m 0755 -pv libexec/* $(DESTDIR)/libexec
+	@ln -fsv $(DESTDIR)/bin/$(NAME) $(PREFIX)/bin/$(NAME)
+	@ln -fsv $(DESTDIR)/completions/$(NAME).zsh $(PREFIX)/share/zsh/site-functions/_$(NAME)
