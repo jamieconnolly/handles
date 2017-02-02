@@ -11,8 +11,8 @@ func ShowAppHelp(ctx *cli.Context) int {
 
 	if cmds := ctx.App.Commands.Visible(); len(cmds) > 0 {
 		cli.Println("\nCommands:")
-		for _, c := range cmds {
-			cli.Printf("   %-15s   %s\n", c.Name, c.Summary)
+		for _, cmd := range cmds {
+			cli.Printf("   %-15s   %s\n", cmd.Name, cmd.Summary)
 		}
 	}
 
@@ -21,25 +21,25 @@ func ShowAppHelp(ctx *cli.Context) int {
 
 // ShowCommandHelp displays the help information for the given command.
 func ShowCommandHelp(ctx *cli.Context) int {
-	c := ctx.Command
+	cmd := ctx.Command
 
-	if !c.Parsed() {
-		c.Parse()
+	if !cmd.Parsed() {
+		cmd.Parse()
 	}
 
 	cli.Println("Name:")
-	cli.Printf("   %s - %s\n", c.Name, c.Summary)
+	cli.Printf("   %s - %s\n", cmd.Name, cmd.Summary)
 
 	cli.Println("\nUsage:")
-	if c.Usage != "" {
-		cli.Println(text.Indent(c.Usage, "   "))
+	if cmd.Usage != "" {
+		cli.Println(text.Indent(cmd.Usage, "   "))
 	} else {
-		cli.Printf("   %s %s %s\n", ctx.App.Name, c.Name, c.ArgsUsage)
+		cli.Printf("   %s %s %s\n", ctx.App.Name, cmd.Name, cmd.ArgsUsage)
 	}
 
-	if c.Description != "" {
+	if cmd.Description != "" {
 		cli.Println("\nDescription:")
-		cli.Println(text.Indent(c.Description, "   "))
+		cli.Println(text.Indent(cmd.Description, "   "))
 	}
 
 	return 0

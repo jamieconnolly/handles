@@ -1,6 +1,7 @@
 #!/bin/bash
 # Usage: foo bar <baz>
 # Summary: Display "Hello, world!"
+# Completions: true
 # Hidden: true
 # Unimplemented: true
 echo "Hello, world!"
