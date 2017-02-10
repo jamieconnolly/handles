@@ -1,5 +1,5 @@
 #!/bin/bash
-# Usage: handles start
+# Usage: handles server
 # Summary: Start the project locally
 
 set -e
