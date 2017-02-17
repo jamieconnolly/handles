@@ -6,7 +6,6 @@ import (
 
 	"github.com/jamieconnolly/mondas/cli"
 	"github.com/jamieconnolly/mondas/commands"
-	"github.com/kardianos/osext"
 )
 
 // Commands is a list of commands for the default application to use.
@@ -25,7 +24,7 @@ func Run(name string, version string) {
 
 	app.Commands = Commands
 
-	if exePath, err := osext.Executable(); err == nil {
+	if exePath, err := os.Executable(); err == nil {
 		app.ExecPath = filepath.Join(exePath, "../../libexec")
 	}
 
