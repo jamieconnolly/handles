@@ -1,14 +1,12 @@
-hash: d05494938b3d70415d4fba565b600b6ffeb55188dc6a439f635b96878811bff2
-updated: 2017-02-02T17:36:06.160576178Z
+hash: 5d463c702d25fd5763c21a6c61b059611eca5e3ca41a4181918f45419543e78e
+updated: 2017-02-17T10:36:39.340143099Z
 imports:
 - name: github.com/jamieconnolly/mondas
-  version: 5fe5273a148ec0455bb083f62b71e1ba5e5be042
+  version: d8eae0b7f7aa7ea2edcc3b37077dd42f28de35ab
   subpackages:
   - cli
   - commands
   - utils
-- name: github.com/kardianos/osext
-  version: c2c54e542fb797ad986b31721e1baedf214ca413
 - name: github.com/kr/text
   version: 7cafcd837844e784b526369c9bce262804aebc60
 - name: github.com/renstrom/dedent

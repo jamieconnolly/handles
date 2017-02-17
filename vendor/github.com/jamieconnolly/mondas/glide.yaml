@@ -1,6 +1,5 @@
 package: github.com/jamieconnolly/mondas
 import:
-  - package: github.com/kardianos/osext
   - package: github.com/kr/text
   - package: github.com/renstrom/dedent
   - package: github.com/texttheater/golang-levenshtein
