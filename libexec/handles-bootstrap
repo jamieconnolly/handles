@@ -61,11 +61,7 @@ fi
 
 if [ -f "package.json" ]; then
   echo "==> Installing Node dependencies…"
-  if [ -f "yarn.lock" ]; then
-    yarn install
-  else
-    npm install
-  fi
+  yarn install
 fi
 
 if [ -f "requirements.txt" ] || [ -f "requirements-dev.txt" ] || [ -f "setup.py" ]; then
