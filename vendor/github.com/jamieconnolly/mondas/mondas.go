@@ -25,7 +25,8 @@ func Run(name string, version string) {
 	app.Commands = Commands
 
 	if exePath, err := os.Executable(); err == nil {
-		app.ExecPath = filepath.Join(exePath, "../../libexec")
+		realPath, _ := filepath.EvalSymlinks(exePath)
+		app.ExecPath = filepath.Join(realPath, "../../libexec")
 	}
 
 	app.AddCommand(commands.CompletionsCommand)
