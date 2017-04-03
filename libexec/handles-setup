@@ -23,7 +23,7 @@ if [ -f ".env.example" ]; then
   handles-setup-dotenv
 fi
 
-if [ -f "nginx.conf.erb" ] && [ "$(uname -s)" = "Darwin" ]; then
+if [ -f "nginx.conf.erb" ]; then
   export NGINX_LOG_DIR="${LOG_DIR}/nginx"
 
   echo "==> Generating nginx server configuration file…"
