@@ -11,7 +11,7 @@ VERSION="$1"
 if [ -z "$VERSION" ]; then
   handles help release >&2
   exit 1
-elif ! echo "$VERSION" | grep -q -E "^v\d(\.\d(\.\d)?)?\$"; then
+elif ! echo "$VERSION" | grep -q -E "^v\d+(\.\d+(\.\d+)?)?\$"; then
   echo "!!! Error: invalid version: ${VERSION}" >&2
   exit 1
 elif [ -z "$(git symbolic-ref HEAD)" ]; then
