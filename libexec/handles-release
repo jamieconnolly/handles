@@ -53,12 +53,13 @@ if ! git push origin "$VERSION" &>/dev/null; then
   exit 1
 fi
 
-echo "==> Releasing on GitHub…"
 CHANGELOG="$(git log --no-merges --format='- %s' --reverse "$PREV_VERSION"..."$VERSION")"
-{ echo "$VERSION"
-  echo
-  echo "${CHANGELOG:-":tada: Initial release"}"
-} | hub release create --draft --file=- "$VERSION" || true
-hub browse -- "releases/${VERSION}"
+
+echo "==> Releasing on GitHub…"
+hub release create --draft --file=- "$VERSION" <<EOF
+${VERSION}
+
+${CHANGELOG:-":tada: Initial release"}
+EOF
 
 echo "==> Successfully released ${VERSION}!"
