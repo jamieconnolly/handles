@@ -6,6 +6,7 @@ set -e
 cd "$(git rev-parse --show-toplevel)"
 test -f "bin/release" && exec "bin/release" "$@"
 
+PREV_VERSION="$(git describe --tags --abbrev=0 --match='v[0-9]*' 2>/dev/null || true)"
 VERSION="$1"
 
 if [ -z "$VERSION" ]; then
@@ -26,7 +27,7 @@ elif ! git fetch --quiet --tags origin; then
 elif git describe --exact-match "$VERSION" &>/dev/null; then
   echo "!!! Error: ${VERSION} tag already exists" >&2
   exit 1
-elif [ "$(git rev-list --count "$(git tag | grep '^v' | sort | tail -1)"..HEAD)" == "0" ]; then
+elif [ -n "$PREV_VERSION" ] && [ "$(git rev-list --count "$PREV_VERSION"..HEAD)" == "0" ]; then
   echo "!!! Error: there have been no commits since the last version" >&2
   exit 1
 elif [ "$(git rev-list --count HEAD..origin/master)" != "0" ]; then
@@ -51,5 +52,13 @@ if ! git push origin "$VERSION" &>/dev/null; then
   echo "!!! Error: failed to push tag to origin" >&2
   exit 1
 fi
+
+echo "==> Releasing on GitHub…"
+CHANGELOG="$(git log --no-merges --format='- %s' --reverse "$PREV_VERSION"..."$VERSION")"
+{ echo "$VERSION"
+  echo
+  echo "${CHANGELOG:-":tada: Initial release"}"
+} | hub release create --draft --file=- "$VERSION" || true
+hub browse -- "releases/${VERSION}"
 
 echo "==> Successfully released ${VERSION}!"
