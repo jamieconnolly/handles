@@ -1,7 +1,9 @@
+NAME ?= $(shell basename `pwd`)
+
 GOARCH ?= $(shell go env GOARCH)
 GOOS ?= $(shell go env GOOS)
 
-LDFLAGS ?= -X main.Name=$(NAME) -X main.Version=$(VERSION)
+LDFLAGS ?=
 GOFLAGS ?= -ldflags "$(LDFLAGS)"
 
 SELF_DIR := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))

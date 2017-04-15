@@ -1,3 +1,5 @@
+NAME ?= $(shell basename `pwd`)
+
 PREFIX ?= /usr/local
 DESTDIR ?= $(PREFIX)/opt/$(NAME)
 
