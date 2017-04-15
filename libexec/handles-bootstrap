@@ -20,7 +20,7 @@ fi
 
 if [ -f "Makefile" ]; then
   (make -q get-deps &>/dev/null; test $? -eq 1) && {
-    echo "==> Installing Makefile dependencies…"
+    echo "==> Installing Make dependencies…"
     make get-deps
   }
 fi
@@ -28,6 +28,11 @@ fi
 if [ -f ".node-version" ] && [ -z "$(nodenv version-name 2>/dev/null)" ]; then
   echo "==> Installing Node…"
   nodenv install --skip-existing
+fi
+
+if [ -f "package.json" ]; then
+  echo "==> Installing Node dependencies…"
+  yarn install
 fi
 
 if [ -f ".python-version" ]; then
@@ -49,21 +54,6 @@ if [ -f ".python-version" ]; then
   fi
 fi
 
-if [ -f ".ruby-version" ] && [ -z "$(rbenv version-name 2>/dev/null)" ]; then
-  echo "==> Installing Ruby…"
-  rbenv install --skip-existing
-
-  if [ -z "$(rbenv which bundle 2>/dev/null)" ]; then
-    gem install bundler
-    rbenv rehash
-  fi
-fi
-
-if [ -f "package.json" ]; then
-  echo "==> Installing Node dependencies…"
-  yarn install
-fi
-
 if [ -f "requirements.txt" ] || [ -f "requirements-dev.txt" ] || [ -f "setup.py" ]; then
   echo "==> Installing Python dependencies…"
   if [ -f "setup.py" ]; then
@@ -73,6 +63,16 @@ if [ -f "requirements.txt" ] || [ -f "requirements-dev.txt" ] || [ -f "setup.py"
     pip install -r requirements-dev.txt
   elif [ -f "requirements.txt" ]; then
     pip install -r requirements.txt
+  fi
+fi
+
+if [ -f ".ruby-version" ] && [ -z "$(rbenv version-name 2>/dev/null)" ]; then
+  echo "==> Installing Ruby…"
+  rbenv install --skip-existing
+
+  if [ -z "$(rbenv which bundle 2>/dev/null)" ]; then
+    gem install bundler
+    rbenv rehash
   fi
 fi
 
