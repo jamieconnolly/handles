@@ -23,7 +23,7 @@ fi
 REPO_URL="https://github.com/${REPO_OWNER}/${REPO_NAME}"
 
 if git ls-remote "$REPO_URL" &>/dev/null; then
-  TARGET_DIR="${PROJECTS_HOME:-$HOME}/${REPO_OWNER}/${REPO_NAME}"
+  TARGET_DIR="${PROJECT_HOME:?}/${REPO_OWNER}/${REPO_NAME}"
 
   if [ ! -d "$TARGET_DIR" ]; then
     echo "==> Fetching ${REPO_OWNER}/${REPO_NAME} from GitHub…"
