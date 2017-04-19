@@ -35,35 +35,19 @@ if [ -f "package.json" ]; then
   yarn install
 fi
 
-if [ -f ".python-version" ]; then
-  if [ -z "$(pyenv version-name 2>/dev/null)" ]; then
-    echo "==> Installing Python…"
-    pyenv install --skip-existing
-  fi
+if [ -f ".python-version" ] && [ -z "$(pyenv version-name 2>/dev/null)" ]; then
+  echo "==> Installing Python…"
+  pyenv install --skip-existing
 
-  if [ -z "$(pyenv virtualenv-name 2>/dev/null)" ]; then
-    VIRTUALENV_NAME="$(pyenv virtualenv-local 2>/dev/null || true)"
-
-    if [ -z "$VIRTUALENV_NAME" ]; then
-      VIRTUALENV_NAME="$(echo "$PWD" | sed -e "s:^${PROJECT_HOME:?}\\(/${GITHUB_USER:?}\\)\{0,1\}/\{0,1\}::g;s:\/:-:g")"
-    fi
-
-    echo "==> Setting up Python environment…"
-    pyenv virtualenv "$VIRTUALENV_NAME"
-    pyenv virtualenv-local "$VIRTUALENV_NAME"
+  if [ -z "$(pyenv which pipenv 2>/dev/null)" ]; then
+    pip install pipenv
+    pyenv rehash
   fi
 fi
 
-if [ -f "requirements.txt" ] || [ -f "requirements-dev.txt" ] || [ -f "setup.py" ]; then
+if [ -f "Pipfile" ]; then
   echo "==> Installing Python dependencies…"
-  if [ -f "setup.py" ]; then
-    pip install -e .
-    pip install .[dev]
-  elif [ -f "requirements-dev.txt" ]; then
-    pip install -r requirements-dev.txt
-  elif [ -f "requirements.txt" ]; then
-    pip install -r requirements.txt
-  fi
+  pipenv install --dev
 fi
 
 if [ -f ".ruby-version" ] && [ -z "$(rbenv version-name 2>/dev/null)" ]; then
