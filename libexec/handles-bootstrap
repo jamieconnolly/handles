@@ -46,8 +46,16 @@ if [ -f ".python-version" ] && [ -z "$(pyenv version-name 2>/dev/null)" ]; then
 fi
 
 if [ -f "Pipfile" ]; then
+  if pipenv --venv &>/dev/null; then
+    PYTHON_REQUESTED="$(pyenv prefix)/bin/python"
+
+    if [ "$(pipenv run python --version 2>&1)" != "$("$PYTHON_REQUESTED" --version 2>&1)" ]; then
+      PYTHON_OUTDATED=1
+    fi
+  fi
+
   echo "==> Installing Python dependencies…"
-  pipenv install --dev
+  pipenv install --dev ${PYTHON_OUTDATED:+--python="$PYTHON_REQUESTED"}
 fi
 
 if [ -f ".ruby-version" ] && [ -z "$(rbenv version-name 2>/dev/null)" ]; then
