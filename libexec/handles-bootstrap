@@ -11,38 +11,51 @@ if [ -f ".gitmodules" ]; then
   git submodule update --init --recursive
 fi
 
-if [ -f "Brewfile" ] && [ "$(uname -s)" = "Darwin" ]; then
-  brew bundle check &>/dev/null || {
+if [ "$(uname -s)" = "Darwin" ]; then
+  if [ -f "Brewfile" ] && ! brew bundle check &>/dev/null; then
     echo "==> Installing Homebrew dependencies…"
     brew bundle
-  }
+  fi
+
+  if [ -f ".node-version" ] && ! nodenv version-name &>/dev/null; then
+    echo "==> Installing Node…"
+    nodenv install --skip-existing
+  fi
+
+  if [ -f ".python-version" ] && ! pyenv version-name &>/dev/null; then
+    echo "==> Installing Python…"
+    pyenv install --skip-existing
+
+    if ! pyenv which pipenv >/dev/null 2>&1; then
+      pip install pipenv
+      pyenv rehash
+    fi
+  fi
+
+  if [ -f ".ruby-version" ] && ! rbenv version-name &>/dev/null; then
+    echo "==> Installing Ruby…"
+    rbenv install --skip-existing
+
+    if ! rbenv which bundle >/dev/null 2>&1; then
+      gem install bundler
+      rbenv rehash
+    fi
+  fi
 fi
 
-if [ -f "Makefile" ]; then
-  (make -q get-deps &>/dev/null; test $? -eq 1) && {
-    echo "==> Installing Make dependencies…"
-    make get-deps
-  }
+if [ -f "Gemfile" ]; then
+  echo "==> Installing gem dependencies…"
+  bundle check &>/dev/null || bundle install --without production
 fi
 
-if [ -f ".node-version" ] && [ -z "$(nodenv version-name 2>/dev/null)" ]; then
-  echo "==> Installing Node…"
-  nodenv install --skip-existing
+if [ -f "Makefile" ] && (make -q get-deps &>/dev/null; test $? -eq 1); then
+  echo "==> Installing Makefile dependencies…"
+  make get-deps
 fi
 
 if [ -f "package.json" ]; then
-  echo "==> Installing Node dependencies…"
+  echo "==> Installing npm dependencies…"
   yarn install
-fi
-
-if [ -f ".python-version" ] && [ -z "$(pyenv version-name 2>/dev/null)" ]; then
-  echo "==> Installing Python…"
-  pyenv install --skip-existing
-
-  if [ -z "$(pyenv which pipenv 2>/dev/null)" ]; then
-    pip install pipenv
-    pyenv rehash
-  fi
 fi
 
 if [ -f "Pipfile" ]; then
@@ -54,23 +67,6 @@ if [ -f "Pipfile" ]; then
     fi
   fi
 
-  echo "==> Installing Python dependencies…"
+  echo "==> Installing pip dependencies…"
   pipenv install --dev ${PYTHON_OUTDATED:+--python="$PYTHON_REQUESTED"}
-fi
-
-if [ -f ".ruby-version" ] && [ -z "$(rbenv version-name 2>/dev/null)" ]; then
-  echo "==> Installing Ruby…"
-  rbenv install --skip-existing
-
-  if [ -z "$(rbenv which bundle 2>/dev/null)" ]; then
-    gem install bundler
-    rbenv rehash
-  fi
-fi
-
-if [ -f "Gemfile" ]; then
-  echo "==> Installing Ruby dependencies…"
-  bundle check &>/dev/null || {
-    bundle install --without production
-  }
 fi
