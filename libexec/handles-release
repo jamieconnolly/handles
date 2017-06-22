@@ -36,9 +36,9 @@ if [ -n "$CURRENT_VERSION" ] && [[ "$CURRENT_VERSION" =~ $VERSION_REGEX ]]; then
   PATCH="${BASH_REMATCH[5]}"
 
   case $VERSION in
-    +major|+M) VERSION="v$(expr ${MAJOR:-0} + 1)${MINOR:+.0}${PATCH:+.0}" ;;
-    +minor|+m) VERSION="v${MAJOR:-0}.$(expr ${MINOR:-0} + 1)${PATCH:+.0}" ;;
-    +patch|+p) VERSION="v${MAJOR:-0}.${MINOR:-0}.$(expr ${PATCH:-0} + 1)" ;;
+    +major|+M) VERSION="v$((${MAJOR:-0} + 1))${MINOR:+.0}${PATCH:+.0}" ;;
+    +minor|+m) VERSION="v${MAJOR:-0}.$((${MINOR:-0} + 1))${PATCH:+.0}" ;;
+    +patch|+p) VERSION="v${MAJOR:-0}.${MINOR:-0}.$((${PATCH:-0} + 1))" ;;
   esac
 fi
 
