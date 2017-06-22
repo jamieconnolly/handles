@@ -48,9 +48,9 @@ if [ -f "Gemfile" ]; then
   bundle check &>/dev/null || bundle install --without production
 fi
 
-if [ -f "Makefile" ] && (make -q get-deps &>/dev/null; test $? -eq 1); then
-  echo "==> Installing Makefile dependencies…"
-  make get-deps
+if [ -f "glide.yaml" ]; then
+  echo "==> Installing go dependencies…"
+  glide install --strip-vendor
 fi
 
 if [ -f "package.json" ]; then
