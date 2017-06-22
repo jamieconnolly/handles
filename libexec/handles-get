@@ -25,12 +25,15 @@ REPO_URL="https://github.com/${REPO_OWNER}/${REPO_NAME}"
 if git ls-remote "$REPO_URL" &>/dev/null; then
   TARGET_DIR="${PROJECT_HOME:?}/${REPO_OWNER}/${REPO_NAME}"
 
+  echo "==> Fetching ${REPO_OWNER}/${REPO_NAME}…"
   if [ ! -d "$TARGET_DIR" ]; then
-    echo "==> Fetching ${REPO_OWNER}/${REPO_NAME} from GitHub…"
-    git clone "$REPO_URL" "$TARGET_DIR"
+    git clone --quiet "$REPO_URL" "$TARGET_DIR"
+    cd "$TARGET_DIR"
+    handles-setup
   else
-    echo "!!! Error: ${TARGET_DIR} already exists" >&2
-    exit 1
+    cd "$TARGET_DIR"
+    git pull --quiet --rebase --autostash
+    handles-update
   fi
 else
   echo "!!! Error: repository ${REPO_OWNER}/${REPO_NAME} doesn't exist" >&2
