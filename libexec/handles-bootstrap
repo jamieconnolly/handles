@@ -3,8 +3,9 @@
 # Summary: Resolve all dependencies that the project requires to run
 
 set -e
-cd "$(git rev-parse --show-toplevel)"
-test -f "bin/bootstrap" && exec "bin/bootstrap" "$@"
+
+cd "$(git rev-parse --show-toplevel 2>/dev/null)"
+test -f "bin/bootstrap" && exec bin/bootstrap "$@"
 
 if [ -f ".gitmodules" ]; then
   echo "==> Cloning into submodules…"
@@ -17,28 +18,40 @@ if [ "$(uname -s)" = "Darwin" ]; then
     brew bundle
   fi
 
-  if [ -f ".node-version" ] && ! nodenv version-name &>/dev/null; then
-    echo "==> Installing Node…"
-    nodenv install --skip-existing
-  fi
+  if [ -f ".node-version" ]; then
+    command -v nodenv || echo "!!! Error: nodenv is not installed" >&2 && exit 1
 
-  if [ -f ".python-version" ] && ! pyenv version-name &>/dev/null; then
-    echo "==> Installing Python…"
-    pyenv install --skip-existing
-
-    if ! pyenv which pipenv >/dev/null 2>&1; then
-      pip install pipenv
-      pyenv rehash
+    if ! nodenv version-name &>/dev/null; then
+      echo "==> Installing Node…"
+      nodenv install --skip-existing
     fi
   fi
 
-  if [ -f ".ruby-version" ] && ! rbenv version-name &>/dev/null; then
-    echo "==> Installing Ruby…"
-    rbenv install --skip-existing
+  if [ -f ".python-version" ]; then
+    command -v pyenv || echo "!!! Error: pyenv is not installed" >&2 && exit 1
 
-    if ! rbenv which bundle >/dev/null 2>&1; then
-      gem install bundler
-      rbenv rehash
+    if ! pyenv version-name &>/dev/null; then
+      echo "==> Installing Python…"
+      pyenv install --skip-existing
+
+      if ! pyenv which pipenv >/dev/null 2>&1; then
+        pip install pipenv
+        pyenv rehash
+      fi
+    fi
+  fi
+
+  if [ -f ".ruby-version" ]; then
+    command -v rbenv || echo "!!! Error: rbenv is not installed" >&2 && exit 1
+
+    if ! rbenv version-name &>/dev/null; then
+      echo "==> Installing Ruby…"
+      rbenv install --skip-existing
+
+      if ! rbenv which bundle >/dev/null 2>&1; then
+        gem install bundler
+        rbenv rehash
+      fi
     fi
   fi
 fi
@@ -49,13 +62,22 @@ if [ -f "Gemfile" ]; then
 fi
 
 if [ -f "glide.yaml" ]; then
+  command -v glide || echo "!!! Error: glide is not installed" >&2 && exit 1
+
   echo "==> Installing go dependencies…"
   glide install --strip-vendor
 fi
 
 if [ -f "package.json" ]; then
   echo "==> Installing npm dependencies…"
-  yarn install
+
+  if [ -f "yarn.lock" ]; then
+    command -v yarn || echo "!!! Error: yarn is not installed" >&2 && exit 1
+
+    yarn install
+  else
+    npm install
+  fi
 fi
 
 if [ -f "Pipfile" ]; then
