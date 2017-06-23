@@ -19,7 +19,10 @@ if [ "$(uname -s)" = "Darwin" ]; then
   fi
 
   if [ -f ".node-version" ]; then
-    command -v nodenv || echo "!!! Error: nodenv is not installed" >&2 && exit 1
+    if ! command -v nodenv >/dev/null 2>&1; then
+      echo "!!! Error: nodenv is not installed" >&2
+      exit 1
+    fi
 
     if ! nodenv version-name &>/dev/null; then
       echo "==> Installing Node…"
@@ -28,7 +31,10 @@ if [ "$(uname -s)" = "Darwin" ]; then
   fi
 
   if [ -f ".python-version" ]; then
-    command -v pyenv || echo "!!! Error: pyenv is not installed" >&2 && exit 1
+    if ! command -v pyenv >/dev/null 2>&1; then
+      echo "!!! Error: pyenv is not installed" >&2
+      exit 1
+    fi
 
     if ! pyenv version-name &>/dev/null; then
       echo "==> Installing Python…"
@@ -42,7 +48,10 @@ if [ "$(uname -s)" = "Darwin" ]; then
   fi
 
   if [ -f ".ruby-version" ]; then
-    command -v rbenv || echo "!!! Error: rbenv is not installed" >&2 && exit 1
+    if ! command -v rbenv >/dev/null 2>&1; then
+      echo "!!! Error: rbenv is not installed" >&2
+      exit 1
+    fi
 
     if ! rbenv version-name &>/dev/null; then
       echo "==> Installing Ruby…"
@@ -62,7 +71,10 @@ if [ -f "Gemfile" ]; then
 fi
 
 if [ -f "glide.yaml" ]; then
-  command -v glide || echo "!!! Error: glide is not installed" >&2 && exit 1
+  if ! command -v glide >/dev/null 2>&1; then
+    echo "!!! Error: glide is not installed" >&2
+    exit 1
+  fi
 
   echo "==> Installing go dependencies…"
   glide install --strip-vendor
@@ -72,7 +84,10 @@ if [ -f "package.json" ]; then
   echo "==> Installing npm dependencies…"
 
   if [ -f "yarn.lock" ]; then
-    command -v yarn || echo "!!! Error: yarn is not installed" >&2 && exit 1
+    if ! command -v yarn >/dev/null 2>&1; then
+      echo "!!! Error: yarn is not installed" >&2
+      exit 1
+    fi
 
     yarn install
   else
