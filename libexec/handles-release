@@ -3,8 +3,9 @@
 # Summary: Tag and push a release
 
 set -e
-cd "$(git rev-parse --show-toplevel)"
-test -f "bin/release" && exec "bin/release" "$@"
+
+cd "$(git rev-parse --show-toplevel 2>/dev/null)"
+test -f "bin/release" && exec bin/release "$@"
 
 CURRENT_VERSION="$(git describe --tags --abbrev=0 --match='v[0-9]*' 2>/dev/null || true)"
 VERSION="$1"
@@ -72,14 +73,18 @@ if ! git push origin "$VERSION" &>/dev/null; then
 fi
 
 if [ -n "$CURRENT_VERSION" ]; then
-  CHANGELOG="$(git log --no-merges --format='- %s' --reverse "$CURRENT_VERSION"..."$VERSION")"
+  CHANGES="$(git log --no-merges --format='- %s' --grep=":bookmark:" --invert-grep --reverse "$CURRENT_VERSION"..."$VERSION")"
+else
+  CHANGES=":tada: Initial release"
 fi
 
-echo "==> Releasing on GitHub…"
-hub release create --draft --file=- "$VERSION" <<EOF
-${VERSION}
+if [[ "$(git remote get-url origin)" =~ github.com ]]; then
+  MESSAGE=("$VERSION" "$CHANGES")
 
-${CHANGELOG:-":tada: Initial release"}
-EOF
+  echo "==> Releasing on GitHub…"
+  OLDIFS="$IFS" IFS=$'\n'
+  echo "${MESSAGE[*]}" | hub release create --draft --file=- "$VERSION"
+  IFS="$OLDIFS"
+fi
 
 echo "==> Successfully released ${VERSION}!"
