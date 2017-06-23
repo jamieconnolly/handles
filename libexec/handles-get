@@ -6,9 +6,9 @@ set -e
 
 PROJECT_NAME="$1"
 
-if [[ "$PROJECT_NAME" =~ ^[A-Za-z0-9][A-Za-z0-9-]*/[A-Za-z0-9_.][A-Za-z0-9_.-]*$ ]]; then
-  REPO_NAME="${PROJECT_NAME#*/}"
-  REPO_OWNER="${PROJECT_NAME%%/*}"
+if [[ "$PROJECT_NAME" =~ ^([A-Za-z0-9][A-Za-z0-9-]*)/([A-Za-z0-9_.][A-Za-z0-9_.-]*)$ ]]; then
+  REPO_NAME="${BASH_REMATCH[2]}"
+  REPO_OWNER="${BASH_REMATCH[1]}"
 elif [[ "$PROJECT_NAME" =~ ^[A-Za-z0-9_.][A-Za-z0-9_.-]*$ ]]; then
   REPO_NAME="$PROJECT_NAME"
   REPO_OWNER="$(git config github.user)"
@@ -28,13 +28,13 @@ if git ls-remote "$REPO_URL" &>/dev/null; then
   echo "==> Fetching ${REPO_OWNER}/${REPO_NAME}…"
   if [ ! -d "$TARGET_DIR" ]; then
     git clone --quiet "$REPO_URL" "$TARGET_DIR"
-    cd "$TARGET_DIR"
-    handles-setup
   else
     cd "$TARGET_DIR"
     git pull --quiet --rebase --autostash
-    handles-update
   fi
+
+  cd "$TARGET_DIR"
+  handles-setup
 else
   echo "!!! Error: repository ${REPO_OWNER}/${REPO_NAME} doesn't exist" >&2
   exit 1
