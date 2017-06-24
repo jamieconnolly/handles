@@ -1,0 +1,29 @@
+#!/bin/bash
+# Usage: handles-test
+# Summary: Run the project's test suite
+
+set -e
+
+cd "$(git rev-parse --show-toplevel 2>/dev/null)"
+
+handles-update
+
+if [ -f "Makefile" ] && (make -q test &>/dev/null; test $? -eq 1); then
+  exec make test "$@"
+elif [ -f "Rakefile" ] && rake -T test &>/dev/null; then
+  exec bundle exec rake test "$@"
+fi
+
+if [ -f "manage.py" ]; then
+  echo "==> Running Django tests…"
+  exec python manage.py test "$@"
+elif [ -n "$(find . -name '*_test.go' -not -path './vendor/*' -print -quit)" ]; then
+  echo "==> Running Go tests…"
+  exec go test -v "${@:-./...}"
+elif [ -f "package.json" ]; then
+  echo "==> Running Node tests…"
+  exec npm test "$@"
+elif [ -f "setup.py" ]; then
+  echo "==> Running Python tests…"
+  exec python setup.py test "$@"
+fi
