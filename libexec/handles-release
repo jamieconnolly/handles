@@ -5,7 +5,6 @@
 set -e
 
 cd "$(git rev-parse --show-toplevel 2>/dev/null)"
-test -f "bin/release" && exec bin/release "$@"
 
 CURRENT_VERSION="$(git describe --tags --abbrev=0 --match='v[0-9]*' 2>/dev/null || true)"
 VERSION="$1"
@@ -54,6 +53,14 @@ elif git describe --exact-match "$VERSION" &>/dev/null; then
   exit 1
 fi
 
+echo "==> Generating release notes…"
+printf "%s\n\n" "$VERSION" > .git/RELEASE_EDITMSG
+if [ -n "$CURRENT_VERSION" ]; then
+  git log  --reverse --no-merges --format='- %s' "$CURRENT_VERSION"..."$VERSION" | grep -v ":bookmark:"
+else
+  echo ":tada: Initial release"
+fi >> .git/RELEASE_EDITMSG
+
 echo "==> Tagging version…"
 if ! git tag -s "$VERSION" -m ":bookmark: Tag ${VERSION}" &>/dev/null; then
   echo "!!! Error: failed to tag version" >&2
@@ -72,19 +79,12 @@ if ! git push origin "$VERSION" &>/dev/null; then
   exit 1
 fi
 
-if [ -n "$CURRENT_VERSION" ]; then
-  CHANGES="$(git log --no-merges --format='- %s' --grep=":bookmark:" --invert-grep --reverse "$CURRENT_VERSION"..."$VERSION")"
-else
-  CHANGES=":tada: Initial release"
-fi
-
 if [[ "$(git remote get-url origin)" =~ github.com ]]; then
-  MESSAGE=("$VERSION" "$CHANGES")
-
   echo "==> Releasing on GitHub…"
-  OLDIFS="$IFS" IFS=$'\n'
-  echo "${MESSAGE[*]}" | hub release create --draft --file=- "$VERSION"
-  IFS="$OLDIFS"
+  if ! hub release create --draft --file=.git/RELEASE_EDITMSG "$VERSION" &>/dev/null; then
+    echo "!!! Error: failed to create release" >&2
+    exit 1
+  fi
 fi
 
 echo "==> Successfully released ${VERSION}!"
