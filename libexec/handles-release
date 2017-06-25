@@ -81,6 +81,12 @@ fi
 
 if [[ "$(git remote get-url origin)" =~ github.com ]]; then
   echo "==> Releasing on GitHub…"
+
+  if ! command -v hub >/dev/null 2>&1; then
+    echo "!!! Error: hub is not installed" >&2
+    exit 1
+  fi
+
   if ! hub release create --draft --file=.git/RELEASE_EDITMSG "$VERSION" &>/dev/null; then
     echo "!!! Error: failed to create release" >&2
     exit 1
