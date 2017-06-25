@@ -15,73 +15,72 @@ fi
 if [ "$(uname -s)" = "Darwin" ]; then
   if [ -f "Brewfile" ] && ! brew bundle check &>/dev/null; then
     echo "==> Installing Homebrew dependencies…"
+
+    if ! command -v brew >/dev/null 2>&1; then
+      echo "!!! Error: brew is not installed" >&2
+      exit 1
+    fi
+
     brew bundle
   fi
 
-  if [ -f ".node-version" ]; then
+  if [ -f ".node-version" ] && ! nodenv version-name &>/dev/null; then
+    echo "==> Installing Node…"
+
     if ! command -v nodenv >/dev/null 2>&1; then
       echo "!!! Error: nodenv is not installed" >&2
       exit 1
     fi
 
-    if ! nodenv version-name &>/dev/null; then
-      echo "==> Installing Node…"
-      nodenv install --skip-existing
-    fi
+    nodenv install --skip-existing
   fi
 
-  if [ -f ".python-version" ]; then
+  if [ -f ".python-version" ] && ! pyenv version-name &>/dev/null; then
+    echo "==> Installing Python…"
+
     if ! command -v pyenv >/dev/null 2>&1; then
       echo "!!! Error: pyenv is not installed" >&2
       exit 1
     fi
 
-    if ! pyenv version-name &>/dev/null; then
-      echo "==> Installing Python…"
-      pyenv install --skip-existing
+    pyenv install --skip-existing
 
-      if ! pyenv which pipenv >/dev/null 2>&1; then
-        pip install pipenv
-        pyenv rehash
-      fi
+    if ! pyenv which pipenv >/dev/null 2>&1; then
+      pip install pipenv
+      pyenv rehash
     fi
   fi
 
-  if [ -f ".ruby-version" ]; then
+  if [ -f ".ruby-version" ] && ! rbenv version-name &>/dev/null; then
+    echo "==> Installing Ruby…"
+
     if ! command -v rbenv >/dev/null 2>&1; then
       echo "!!! Error: rbenv is not installed" >&2
       exit 1
     fi
 
-    if ! rbenv version-name &>/dev/null; then
-      echo "==> Installing Ruby…"
-      rbenv install --skip-existing
+    rbenv install --skip-existing
 
-      if ! rbenv which bundle >/dev/null 2>&1; then
-        gem install bundler
-        rbenv rehash
-      fi
+    if ! rbenv which bundle >/dev/null 2>&1; then
+      gem install bundler
+      rbenv rehash
     fi
   fi
 fi
 
-if [ -f "Gemfile" ]; then
-  echo "==> Installing gem dependencies…"
-  bundle check &>/dev/null || bundle install --without production
-fi
-
 if [ -f "glide.yaml" ]; then
+  echo "==> Installing Go dependencies…"
+
   if ! command -v glide >/dev/null 2>&1; then
     echo "!!! Error: glide is not installed" >&2
     exit 1
   fi
 
-  echo "==> Installing go dependencies…"
   glide install --strip-vendor
 fi
 
 if [ -f "package.json" ]; then
-  echo "==> Installing npm dependencies…"
+  echo "==> Installing Node dependencies…"
 
   if [ -f "yarn.lock" ]; then
     if ! command -v yarn >/dev/null 2>&1; then
@@ -104,6 +103,11 @@ if [ -f "Pipfile" ]; then
     fi
   fi
 
-  echo "==> Installing pip dependencies…"
+  echo "==> Installing Python dependencies…"
   pipenv install --dev ${PYTHON_OUTDATED:+--python="$PYTHON_REQUESTED"}
+fi
+
+if [ -f "Gemfile" ]; then
+  echo "==> Installing Ruby dependencies…"
+  bundle check &>/dev/null || bundle install --without production
 fi
