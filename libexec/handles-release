@@ -56,7 +56,7 @@ fi
 echo "==> Generating release notes…"
 printf "%s\n\n" "$VERSION" > .git/RELEASE_EDITMSG
 if [ -n "$CURRENT_VERSION" ]; then
-  git log  --reverse --no-merges --format='- %s' "$CURRENT_VERSION"..."$VERSION" | grep -v ":bookmark:"
+  git log  --reverse --no-merges --format='- %s' "$CURRENT_VERSION"...HEAD | grep -v ":bookmark:"
 else
   echo ":tada: Initial release"
 fi >> .git/RELEASE_EDITMSG
