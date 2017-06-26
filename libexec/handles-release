@@ -19,6 +19,9 @@ elif [ -z "$(git symbolic-ref HEAD)" ]; then
 elif [ "$(git symbolic-ref HEAD)" != "refs/heads/master" ]; then
   echo "!!! Error: your checkout isn't on master" >&2
   exit 1
+elif [ ! -z "$(git status --porcelain 2>/dev/null)" ]; then
+  echo "!!! Error: there are uncommitted changes" >&2
+  exit 1
 elif ! git fetch --quiet --tags origin; then
   echo "!!! Error: running 'git fetch' failed" >&2
   exit 1
