@@ -22,6 +22,13 @@ elif ! command -v nginx &>/dev/null; then
   exit 1
 fi
 
+if [ "$(uname -s)" = "Darwin" ]; then
+  PREFIX="$(brew --prefix)"
+fi
+
+export NGINX_LOG_DIR="${PREFIX}/var/log/nginx"
+export SERVER_NAME
+
 if ! erb "$INPUT_FILE" > "$OUTPUT_FILE"; then
   echo "!!! Error: failed to generate nginx configuration file" >&2
   exit 1
