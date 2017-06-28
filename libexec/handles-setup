@@ -8,3 +8,5 @@ cd "$(git rev-parse --show-toplevel 2>/dev/null)"
 test -f "bin/setup" && exec bin/setup "$@"
 
 handles-bootstrap
+
+echo "==> Your project is now ready to go!"

@@ -41,11 +41,6 @@ if [ "$(uname -s)" = "Darwin" ]; then
   )
   PREFIX="$(brew --prefix)"
 
-  if ! command -v brew >/dev/null 2>&1; then
-    echo "!!! Error: brew is not installed" >&2
-    exit 1
-  fi
-
   OLDIFS="$IFS" IFS=$'\n'
   echo "${BREWFILE[*]}" | brew bundle check --file=- >/dev/null || {
     echo "==> Installing *.dev dependencies…"
