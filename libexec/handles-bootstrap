@@ -15,34 +15,16 @@ fi
 if [ "$(uname -s)" = "Darwin" ]; then
   if [ -f "Brewfile" ] && ! brew bundle check &>/dev/null; then
     echo "==> Installing Homebrew dependencies…"
-
-    if ! command -v brew >/dev/null 2>&1; then
-      echo "!!! Error: brew is not installed" >&2
-      exit 1
-    fi
-
     brew bundle
   fi
 
   if [ -f ".node-version" ] && ! nodenv version-name &>/dev/null; then
     echo "==> Installing Node…"
-
-    if ! command -v nodenv >/dev/null 2>&1; then
-      echo "!!! Error: nodenv is not installed" >&2
-      exit 1
-    fi
-
     nodenv install --skip-existing
   fi
 
   if [ -f ".python-version" ] && ! pyenv version-name &>/dev/null; then
     echo "==> Installing Python…"
-
-    if ! command -v pyenv >/dev/null 2>&1; then
-      echo "!!! Error: pyenv is not installed" >&2
-      exit 1
-    fi
-
     pyenv install --skip-existing
 
     if ! pyenv which pipenv >/dev/null 2>&1; then
@@ -53,12 +35,6 @@ if [ "$(uname -s)" = "Darwin" ]; then
 
   if [ -f ".ruby-version" ] && ! rbenv version-name &>/dev/null; then
     echo "==> Installing Ruby…"
-
-    if ! command -v rbenv >/dev/null 2>&1; then
-      echo "!!! Error: rbenv is not installed" >&2
-      exit 1
-    fi
-
     rbenv install --skip-existing
 
     if ! rbenv which bundle >/dev/null 2>&1; then
@@ -70,12 +46,6 @@ fi
 
 if [ -f "glide.yaml" ]; then
   echo "==> Installing Go dependencies…"
-
-  if ! command -v glide >/dev/null 2>&1; then
-    echo "!!! Error: glide is not installed" >&2
-    exit 1
-  fi
-
   glide install --strip-vendor
 fi
 
@@ -83,11 +53,6 @@ if [ -f "package.json" ]; then
   echo "==> Installing Node dependencies…"
 
   if [ -f "yarn.lock" ]; then
-    if ! command -v yarn >/dev/null 2>&1; then
-      echo "!!! Error: yarn is not installed" >&2
-      exit 1
-    fi
-
     yarn install
   else
     npm install
