@@ -1,5 +1,5 @@
 #!/bin/bash
-# Usage: handles release [+major | +minor | +patch | <version>]
+# Usage: handles release [major | minor | patch | <version>]
 # Summary: Tag and push a release
 
 set -e
@@ -42,9 +42,9 @@ elif [ -z "$CURRENT_VERSION" ]; then
 fi
 
 case $VERSION in
-  +major|+M) VERSION="v$((${MAJOR:-0} + 1))${MINOR:+.0}${PATCH:+.0}" ;;
-  +minor|+m) VERSION="v${MAJOR:-0}.$((${MINOR:-0} + 1))${PATCH:+.0}" ;;
-  +patch|+p) VERSION="v${MAJOR:-0}.${MINOR:-0}.$((${PATCH:-0} + 1))" ;;
+  major|+M) VERSION="v$((${MAJOR:-0} + 1))${MINOR:+.0}${PATCH:+.0}" ;;
+  minor|+m) VERSION="v${MAJOR:-0}.$((${MINOR:-0} + 1))${PATCH:+.0}" ;;
+  patch|+p) VERSION="v${MAJOR:-0}.${MINOR:-0}.$((${PATCH:-0} + 1))" ;;
 esac
 
 if [[ ! "$VERSION" =~ $VERSION_REGEX ]]; then
