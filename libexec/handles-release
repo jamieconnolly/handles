@@ -1,5 +1,5 @@
 #!/bin/bash
-# Usage: handles release [<version> | +major | +minor | +patch]
+# Usage: handles release [+major | +minor | +patch | <version>]
 # Summary: Tag and push a release
 
 set -e
@@ -50,21 +50,13 @@ esac
 if [[ ! "$VERSION" =~ $VERSION_REGEX ]]; then
   echo "!!! Error: invalid version: ${VERSION}" >&2
   exit 1
-elif [ -n "$CURRENT_VERSION" ] && [ "$(git rev-list --count "$CURRENT_VERSION"..HEAD)" == "0" ]; then
-  echo "!!! Error: there are no commits to release" >&2
-  exit 1
 elif git describe --exact-match "$VERSION" &>/dev/null; then
   echo "!!! Error: ${VERSION} tag already exists" >&2
   exit 1
+elif [ -n "$CURRENT_VERSION" ] && [ "$(git rev-list --count "$CURRENT_VERSION"..HEAD)" == "0" ]; then
+  echo "!!! Error: there are no commits to release" >&2
+  exit 1
 fi
-
-echo "==> Generating release notes…"
-printf "%s\n\n" "$VERSION" > .git/RELEASE_EDITMSG
-if [ -n "$CURRENT_VERSION" ]; then
-  git log  --reverse --no-merges --format='- %s' "$CURRENT_VERSION"..HEAD | grep -v ":bookmark:"
-else
-  echo ":tada: Initial release"
-fi >> .git/RELEASE_EDITMSG
 
 echo "==> Tagging version…"
 if ! git tag -s "$VERSION" -m ":bookmark: Tag ${VERSION}" &>/dev/null; then
@@ -82,14 +74,6 @@ echo "==> Pushing tag to origin…"
 if ! git push origin "$VERSION" &>/dev/null; then
   echo "!!! Error: failed to push tag to origin" >&2
   exit 1
-fi
-
-if [[ "$(git remote get-url origin)" =~ github.com ]]; then
-  echo "==> Releasing on GitHub…"
-  if ! hub release create --draft --file=.git/RELEASE_EDITMSG "$VERSION" &>/dev/null; then
-    echo "!!! Error: failed to create release" >&2
-    exit 1
-  fi
 fi
 
 echo "==> Successfully released ${VERSION}!"
