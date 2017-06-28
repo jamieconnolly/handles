@@ -68,7 +68,28 @@ if [ -f "package.json" ]; then
 
   test -f "npm-shrinkwrap.json" && git add --update npm-shrinkwrap.json
   test -f "package-lock.json" && git add --update package-lock.json
+
   git add --update package.json
+fi
+
+if [ -f "CHANGELOG.md" ] && ! grep -q "^# ${VERSION}" CHANGELOG.md &>/dev/null; then
+  echo "==> Generating changelog…"
+
+  printf "# %s - %s\n\n" "$VERSION" "$(date +"%d %b %Y")" > CHANGELOG.tmp
+
+  if [ -n "$CURRENT_VERSION" ]; then
+    git log  --reverse --no-merges --format='- %s' "$CURRENT_VERSION"..HEAD | grep -v ":bookmark:"
+  else
+    echo "- :tada: Initial release"
+  fi >> CHANGELOG.tmp
+
+  if [ -s "CHANGELOG.md" ]; then
+    printf "\n%s\n" "$(cat CHANGELOG.md)" >> CHANGELOG.tmp
+  fi
+
+  mv CHANGELOG.tmp CHANGELOG.md
+
+  git add --update CHANGELOG.md
 fi
 
 if ! git diff-index --cached --quiet HEAD --; then
