@@ -7,10 +7,10 @@ all: clean test build
 
 include vendor/github.com/jamieconnolly/mondas/make/*.mk
 
-check:
+lint:
 	@echo "==> Running static analysis…"
 	@shellcheck -f gcc libexec/*
 
-test: check
+test: lint
 
-.PHONY: all check test
+.PHONY: all lint test
