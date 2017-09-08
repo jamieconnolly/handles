@@ -1,12 +1,12 @@
 hash: 848bd658cafe8083728000fddb70e7b16c6e3d902d80b645a4abc960e0b9674a
-updated: 2017-04-15T12:29:45.17963169+01:00
+updated: 2017-09-08T10:19:24.841722506+01:00
 imports:
 - name: github.com/kr/text
   version: 7cafcd837844e784b526369c9bce262804aebc60
 - name: github.com/renstrom/dedent
   version: 020d11c3b9c0c7a3c2efcc8e5cf5b9ef7bcea21f
 - name: github.com/texttheater/golang-levenshtein
-  version: a809b0abc4bdd4591a275c2dcf0982b0581da4e6
+  version: 1a14278c506abae7c17b3cb0b84ae863c7300454
   subpackages:
   - levenshtein
 testImports:
