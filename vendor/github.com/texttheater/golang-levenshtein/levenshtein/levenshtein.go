@@ -1,3 +1,10 @@
+// This package implements the Levenshtein algorithm for computing the
+// similarity between two strings. The central function is MatrixForStrings,
+// which computes the Levenshtein matrix. The functions DistanceForMatrix,
+// EditScriptForMatrix and RatioForMatrix read various interesting properties
+// off the matrix. The package also provides the convenience functions
+// DistanceForStrings, EditScriptForStrings and RatioForStrings for going
+// directly from two strings to the property of interest.
 package levenshtein
 
 import (
@@ -49,13 +56,77 @@ func (operation EditOperation) String() string {
 }
 
 // DistanceForStrings returns the edit distance between source and target.
+//
+// It has a runtime proportional to len(source) * len(target) and memory use
+// proportional to len(target).
 func DistanceForStrings(source []rune, target []rune, op Options) int {
-	return DistanceForMatrix(MatrixForStrings(source, target, op))
+	// Note: This algorithm is a specialization of MatrixForStrings.
+	// MatrixForStrings returns the full edit matrix. However, we only need a
+	// single value (see DistanceForMatrix) and the main loop of the algorithm
+	// only uses the current and previous row. As such we create a 2D matrix,
+	// but with height 2 (enough to store current and previous row).
+	height := len(source) + 1
+	width := len(target) + 1
+	matrix := make([][]int, 2)
+
+	// Initialize trivial distances (from/to empty string). That is, fill
+	// the left column and the top row with row/column indices.
+	for i := 0; i < 2; i++ {
+		matrix[i] = make([]int, width)
+		matrix[i][0] = i
+	}
+	for j := 1; j < width; j++ {
+		matrix[0][j] = j
+	}
+
+	// Fill in the remaining cells: for each prefix pair, choose the
+	// (edit history, operation) pair with the lowest cost.
+	for i := 1; i < height; i++ {
+		cur := matrix[i%2]
+		prev := matrix[(i-1)%2]
+		cur[0] = i
+		for j := 1; j < width; j++ {
+			delCost := prev[j] + op.DelCost
+			matchSubCost := prev[j-1]
+			if !op.Matches(source[i-1], target[j-1]) {
+				matchSubCost += op.SubCost
+			}
+			insCost := cur[j-1] + op.InsCost
+			cur[j] = min(delCost, min(matchSubCost, insCost))
+		}
+	}
+	return matrix[(height-1)%2][width-1]
 }
 
 // DistanceForMatrix reads the edit distance off the given Levenshtein matrix.
 func DistanceForMatrix(matrix [][]int) int {
 	return matrix[len(matrix)-1][len(matrix[0])-1]
+}
+
+// RatioForStrings returns the Levenshtein ratio for the given strings. The
+// ratio is computed as follows:
+//
+//     (sourceLength + targetLength - distance) / (sourceLength + targetLength)
+func RatioForStrings(source []rune, target []rune, op Options) float64 {
+	matrix := MatrixForStrings(source, target, op)
+	return RatioForMatrix(matrix)
+}
+
+// RatioForMatrix returns the Levenshtein ratio for the given matrix. The ratio
+// is computed as follows:
+//
+//     (sourceLength + targetLength - distance) / (sourceLength + targetLength)
+func RatioForMatrix(matrix [][]int) float64 {
+	sourcelength := len(matrix) - 1
+	targetlength := len(matrix[0]) - 1
+	sum := sourcelength + targetlength
+
+	if sum == 0 {
+		return 0
+	}
+
+	dist := DistanceForMatrix(matrix)
+	return float64(sum-dist) / float64(sum)
 }
 
 // MatrixForStrings generates a 2-D array representing the dynamic programming
