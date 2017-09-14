@@ -18,6 +18,11 @@ if [ "$(uname -s)" = "Darwin" ]; then
     brew bundle
   fi
 
+  if [ -f ".go-version" ] && ! goenv version-name &>/dev/null; then
+    echo "==> Installing Go…"
+    goenv install --skip-existing
+  fi
+
   if [ -f ".node-version" ] && ! nodenv version-name &>/dev/null; then
     echo "==> Installing Node…"
     nodenv install --skip-existing
