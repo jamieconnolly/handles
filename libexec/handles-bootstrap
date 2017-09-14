@@ -49,9 +49,9 @@ if [ "$(uname -s)" = "Darwin" ]; then
   fi
 fi
 
-if [ -f "glide.yaml" ]; then
+if [ -f "Gopkg.toml" ]; then
   echo "==> Installing Go dependencies…"
-  glide install --strip-vendor
+  dep ensure
 fi
 
 if [ -f "package.json" ]; then
