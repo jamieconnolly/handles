@@ -11,7 +11,7 @@ if [[ "$PROJECT_NAME" =~ ^([A-Za-z0-9][A-Za-z0-9-]*)/([A-Za-z0-9_.][A-Za-z0-9_.-
   REPO_OWNER="${BASH_REMATCH[1]}"
 elif [[ "$PROJECT_NAME" =~ ^[A-Za-z0-9_.][A-Za-z0-9_.-]*$ ]]; then
   REPO_NAME="$PROJECT_NAME"
-  REPO_OWNER="$(git config github.user)"
+  REPO_OWNER="${GITHUB_USER:?}"
 elif [ -n "$PROJECT_NAME" ]; then
   echo "!!! Error: invalid project: ${PROJECT_NAME}" >&2
   exit 1
