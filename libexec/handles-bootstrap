@@ -17,42 +17,32 @@ if [ -f "Brewfile" ] && [ "$(uname -s)" = "Darwin" ]; then
   brew bundle check &>/dev/null || brew bundle
 fi
 
-if [ -f ".go-version" ] && ! goenv version-name &>/dev/null; then
-  echo "==> Installing Go…"
-  goenv install --skip-existing
-fi
-
-if [ -f ".node-version" ] && ! nodenv version-name &>/dev/null; then
-  echo "==> Installing Node…"
-  nodenv install --skip-existing
-fi
-
-if [ -f ".python-version" ] && ! pyenv version-name &>/dev/null; then
-  echo "==> Installing Python…"
-  pyenv install --skip-existing
-fi
-
-if [ -f ".ruby-version" ] && ! rbenv version-name &>/dev/null; then
-  echo "==> Installing Ruby…"
-  rbenv install --skip-existing
-
-  if ! rbenv which bundle >/dev/null 2>&1; then
-    gem install bundler
-    rbenv rehash
-  fi
-fi
-
 if [ -f "Gopkg.toml" ]; then
+  if ! goenv version-name &>/dev/null; then
+    echo "==> Installing Go…"
+    goenv install --skip-existing
+  fi
+
   echo "==> Installing Go dependencies…"
   dep ensure
 fi
 
 if [ -f "package.json" ]; then
+  if ! nodenv version-name &>/dev/null; then
+    echo "==> Installing Node…"
+    nodenv install --skip-existing
+  fi
+
   echo "==> Installing Node dependencies…"
   yarn install
 fi
 
 if [ -f "Pipfile" ]; then
+  if ! pyenv version-name &>/dev/null; then
+    echo "==> Installing Python…"
+    pyenv install --skip-existing
+  fi
+
   if pipenv --venv &>/dev/null; then
     PYTHON_REQUESTED="$(pyenv prefix)/bin/python"
 
@@ -66,6 +56,16 @@ if [ -f "Pipfile" ]; then
 fi
 
 if [ -f "Gemfile" ]; then
+  if ! rbenv version-name &>/dev/null; then
+    echo "==> Installing Ruby…"
+    rbenv install --skip-existing
+
+    if ! rbenv which bundle >/dev/null 2>&1; then
+      gem install bundler
+      rbenv rehash
+    fi
+  fi
+
   echo "==> Installing Ruby dependencies…"
   bundle check &>/dev/null || bundle install --without production
 fi
