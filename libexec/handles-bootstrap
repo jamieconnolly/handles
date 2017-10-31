@@ -12,40 +12,38 @@ if [ -f ".gitmodules" ]; then
   git submodule update --init --recursive
 fi
 
-if [ "$(uname -s)" = "Darwin" ]; then
-  if [ -f "Brewfile" ] && ! brew bundle check &>/dev/null; then
-    echo "==> Installing Homebrew dependencies…"
-    brew bundle
+if [ -f "Brewfile" ] && [ "$(uname -s)" = "Darwin" ]; then
+  echo "==> Installing Homebrew dependencies…"
+  brew bundle check &>/dev/null || brew bundle
+fi
+
+if [ -f ".go-version" ] && ! goenv version-name &>/dev/null; then
+  echo "==> Installing Go…"
+  goenv install --skip-existing
+fi
+
+if [ -f ".node-version" ] && ! nodenv version-name &>/dev/null; then
+  echo "==> Installing Node…"
+  nodenv install --skip-existing
+fi
+
+if [ -f ".python-version" ] && ! pyenv version-name &>/dev/null; then
+  echo "==> Installing Python…"
+  pyenv install --skip-existing
+
+  if ! pyenv which pipenv >/dev/null 2>&1; then
+    pip install pipenv
+    pyenv rehash
   fi
+fi
 
-  if [ -f ".go-version" ] && ! goenv version-name &>/dev/null; then
-    echo "==> Installing Go…"
-    goenv install --skip-existing
-  fi
+if [ -f ".ruby-version" ] && ! rbenv version-name &>/dev/null; then
+  echo "==> Installing Ruby…"
+  rbenv install --skip-existing
 
-  if [ -f ".node-version" ] && ! nodenv version-name &>/dev/null; then
-    echo "==> Installing Node…"
-    nodenv install --skip-existing
-  fi
-
-  if [ -f ".python-version" ] && ! pyenv version-name &>/dev/null; then
-    echo "==> Installing Python…"
-    pyenv install --skip-existing
-
-    if ! pyenv which pipenv >/dev/null 2>&1; then
-      pip install pipenv
-      pyenv rehash
-    fi
-  fi
-
-  if [ -f ".ruby-version" ] && ! rbenv version-name &>/dev/null; then
-    echo "==> Installing Ruby…"
-    rbenv install --skip-existing
-
-    if ! rbenv which bundle >/dev/null 2>&1; then
-      gem install bundler
-      rbenv rehash
-    fi
+  if ! rbenv which bundle >/dev/null 2>&1; then
+    gem install bundler
+    rbenv rehash
   fi
 fi
 
