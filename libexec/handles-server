@@ -12,3 +12,9 @@ if [ -f "Procfile" ] || [ -f "Procfile.local" ]; then
   test -f "Procfile.local" && PROCFILE="Procfile.local" || PROCFILE="Procfile"
   exec forego start -f "$PROCFILE"
 fi
+
+if [ -f "manage.py" ]; then
+  exec pipenv run python manage.py runserver
+elif [ -f "package.json" ]; then
+  exec yarn run start
+fi
