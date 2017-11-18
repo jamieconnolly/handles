@@ -5,25 +5,32 @@
 set -e
 
 cd "$(git rev-parse --show-toplevel 2>/dev/null)"
+test -f "bin/test" && exec bin/test "$@"
 
 handles-update
 
 if [ -f "Makefile" ] && (make -q test &>/dev/null; test $? -eq 1); then
   exec make test "$@"
-elif [ -f "Rakefile" ] && rake -T test &>/dev/null; then
+elif [ -f "Rakefile" ] && bundle exec rake -T test &>/dev/null; then
   exec bundle exec rake test "$@"
 fi
 
 if [ -f "manage.py" ]; then
   echo "==> Running Django tests…"
-  exec python manage.py test "$@"
-elif [ -n "$(find . -name '*_test.go' -not -path './vendor/*' -print -quit)" ]; then
+  pipenv run python manage.py test "$@"
+fi
+
+if [ -n "$(find . -name '*_test.go' -not -path './vendor/*' -print -quit)" ]; then
   echo "==> Running Go tests…"
-  exec go test -v "${@:-./...}"
-elif [ -f "package.json" ]; then
+  go test -v "${@:-./...}"
+fi
+
+if [ -f "package.json" ]; then
   echo "==> Running Node tests…"
-  exec npm test "$@"
-elif [ -f "setup.py" ]; then
+  yarn run test "$@"
+fi
+
+if [ -f "setup.py" ]; then
   echo "==> Running Python tests…"
-  exec python setup.py test "$@"
+  pipenv run python setup.py test "$@"
 fi
