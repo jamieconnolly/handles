@@ -5,6 +5,12 @@
 set -e
 
 cd "$(git rev-parse --show-toplevel 2>/dev/null)"
-test -f "bin/update" && exec bin/update "$@"
+test -f "bin/update" && exec bin/update
 
 handles-bootstrap
+
+if [ -f "Makefile" ] && (make -q update &>/dev/null; test $? -eq 1); then
+  exec make update
+elif [ -f "Rakefile" ] && bundle exec rake -T update &>/dev/null; then
+  exec bundle exec rake update
+fi
