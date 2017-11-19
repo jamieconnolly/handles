@@ -15,6 +15,8 @@ elif [ -f "Rakefile" ] && bundle exec rake -T setup &>/dev/null; then
   exec bundle exec rake setup
 fi
 
+PROJECT_NAME="${PWD/#${PROJECT_HOME:?}\//}"
+
 if [ -f ".env.example" ]; then
   echo "==> Copying environment file…"
   cp .env.example .env
@@ -22,6 +24,7 @@ fi
 
 if [ -f "manage.py" ]; then
   echo "==> Preparing database…"
+  handles-setup-postgres-db "${PROJECT_NAME%/*}"
   pipenv run python manage.py migrate
 fi
 
