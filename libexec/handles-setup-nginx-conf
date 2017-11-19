@@ -26,8 +26,8 @@ if [ "$(uname -s)" = "Darwin" ]; then
   PREFIX="$(brew --prefix)"
 fi
 
-export NGINX_LOG_DIR="${PREFIX}/var/log/nginx"
-export SERVER_NAME
+export LOG_DIR="${PREFIX}/var/log/nginx"
+export SOCKET_DIR="${PREFIX}/var/run"
 
 if ! erb "$INPUT_FILE" > "$OUTPUT_FILE"; then
   echo "!!! Error: failed to generate nginx configuration file" >&2
