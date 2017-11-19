@@ -32,9 +32,6 @@ if git ls-remote "$REPO_URL" &>/dev/null; then
     cd "$TARGET_DIR"
     git pull --quiet --rebase --autostash
   fi
-
-  cd "$TARGET_DIR"
-  handles-setup
 else
   echo "!!! Error: repository ${REPO_OWNER}/${REPO_NAME} doesn't exist" >&2
   exit 1
