@@ -12,13 +12,11 @@ DB_NAME="$1"
 if [ -z "$DB_NAME" ]; then
   handles help setup-postgres-db >&2
   exit 1
+elif [[ ! "$DB_NAME" =~ ^[A-Za-z0-9][A-Za-z0-9-]*$ ]]; then
+  echo "!!! Error: invalid database name: ${DB_NAME}" >&2
+  exit 1
 elif ! command -v postgres &>/dev/null; then
   echo "!!! Error: postgres is not installed" >&2
-  exit 1
-fi
-
-if ! dropdb --if-exists "$DB_NAME" &>/dev/null; then
-  echo "!!! Error: failed to drop database" >&2
   exit 1
 fi
 
