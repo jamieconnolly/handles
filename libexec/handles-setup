@@ -20,4 +20,9 @@ if [ -f ".env.example" ]; then
   cp .env.example .env
 fi
 
+if [ -f "manage.py" ]; then
+  echo "==> Preparing database…"
+  pipenv run python manage.py migrate
+fi
+
 echo "==> Your project is now ready to go!"

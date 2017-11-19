@@ -14,3 +14,8 @@ if [ -f "Makefile" ] && (make -q update &>/dev/null; test $? -eq 1); then
 elif [ -f "Rakefile" ] && bundle exec rake -T update &>/dev/null; then
   exec bundle exec rake update
 fi
+
+if [ -f "manage.py" ]; then
+  echo "==> Updating database…"
+  pipenv run python manage.py migrate
+fi
