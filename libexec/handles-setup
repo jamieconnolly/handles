@@ -15,4 +15,9 @@ elif [ -f "Rakefile" ] && bundle exec rake -T setup &>/dev/null; then
   exec bundle exec rake setup
 fi
 
+if [ -f ".env.example" ]; then
+  echo "==> Copying environment file…"
+  cp .env.example .env
+fi
+
 echo "==> Your project is now ready to go!"
