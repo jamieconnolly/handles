@@ -20,7 +20,10 @@ elif ! command -v postgres &>/dev/null; then
   exit 1
 fi
 
-if ! createdb "$DB_NAME" &>/dev/null; then
-  echo "!!! Error: failed to create database" >&2
-  exit 1
+QUERY="SELECT COUNT(*) FROM pg_catalog.pg_database WHERE datname='${DB_NAME}'"
+if [ "$(psql postgres -qAt -c "${QUERY}")" == "0" ]; then
+  if ! createdb "$DB_NAME" &>/dev/null; then
+    echo "!!! Error: failed to create database" >&2
+    exit 1
+  fi
 fi
