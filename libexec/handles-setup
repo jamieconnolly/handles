@@ -5,9 +5,6 @@
 set -e
 
 cd "$(git rev-parse --show-toplevel 2>/dev/null)"
-test -f "bin/setup" && exec bin/setup
-
-handles-bootstrap
 
 if [ -f "Makefile" ] && (make -q setup &>/dev/null; test $? -eq 1); then
   exec make setup
@@ -16,6 +13,8 @@ elif [ -f "Rakefile" ] && bundle exec rake -T setup &>/dev/null; then
 fi
 
 PROJECT_NAME="${PWD#${PROJECT_HOME:?}\/}"
+
+handles-bootstrap
 
 if [ -f ".env.example" ]; then
   echo "==> Copying environment file…"

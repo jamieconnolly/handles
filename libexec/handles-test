@@ -5,15 +5,14 @@
 set -e
 
 cd "$(git rev-parse --show-toplevel 2>/dev/null)"
-test -f "bin/test" && exec bin/test "$@"
-
-handles-update
 
 if [ -f "Makefile" ] && (make -q test &>/dev/null; test $? -eq 1); then
   exec make test "$@"
 elif [ -f "Rakefile" ] && bundle exec rake -T test &>/dev/null; then
   exec bundle exec rake test "$@"
 fi
+
+handles-update
 
 if [ -f "manage.py" ]; then
   echo "==> Running Django tests…"
