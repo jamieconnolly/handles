@@ -13,8 +13,14 @@ if [ -f "Procfile" ] || [ -f "Procfile.local" ]; then
   exec forego start -f "$PROCFILE"
 fi
 
+if [ -f "docker-compose.yml" ]; then
+  exec docker-compose up
+fi
+
 if [ -f "manage.py" ]; then
   exec pipenv run python manage.py runserver
-elif [ -f "package.json" ]; then
+fi
+
+if [ -f "package.json" ]; then
   exec yarn run start
 fi
