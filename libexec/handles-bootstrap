@@ -64,11 +64,6 @@ if [ -f "Gemfile" ]; then
   if ! rbenv version-name &>/dev/null; then
     echo "==> Installing Ruby…"
     rbenv install --skip-existing
-
-    if ! rbenv which bundle >/dev/null 2>&1; then
-      gem install bundler
-      rbenv rehash
-    fi
   fi
 
   echo "==> Installing Ruby dependencies…"
