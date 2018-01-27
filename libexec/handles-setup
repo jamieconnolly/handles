@@ -16,9 +16,9 @@ PROJECT_NAME="${PWD#${PROJECT_HOME:?}\/}"
 
 handles-bootstrap
 
-if [ -f ".env.example" ]; then
+if [ -f ".env.dist" ]; then
   echo "==> Copying environment file…"
-  cp .env.example .env
+  cp .env.dist .env
 fi
 
 if [ -f "nginx.conf.erb" ]; then
