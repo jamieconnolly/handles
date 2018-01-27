@@ -8,13 +8,23 @@ cd "$(git rev-parse --show-toplevel 2>/dev/null)"
 
 handles-update
 
-if [ -f "Procfile" ] || [ -f "Procfile.local" ]; then
-  test -f "Procfile.local" && PROCFILE="Procfile.local" || PROCFILE="Procfile"
-  exec forego start -f "$PROCFILE"
+if [ -f "docker-compose.yml" ]; then
+  if ! command -v docker-compose &>/dev/null; then
+    echo "!!! Error: docker-compose is not installed" >&2
+    exit 1
+  fi
+
+  exec docker-compose up
 fi
 
-if [ -f "docker-compose.yml" ]; then
-  exec docker-compose up
+if [ -f "Procfile" ] || [ -f "Procfile.local" ]; then
+  if ! command -v forego &>/dev/null; then
+    echo "!!! Error: forego is not installed" >&2
+    exit 1
+  fi
+
+  test -f "Procfile.local" && PROCFILE="Procfile.local" || PROCFILE="Procfile"
+  exec forego start -f "$PROCFILE"
 fi
 
 if [ -f "manage.py" ]; then
