@@ -7,9 +7,10 @@ all: clean test
 clean:
 	@rm -f .coverprofile *.coverprofile */.coverprofile */*.coverprofile
 
-cover: clean test
-	@gover .
-	@go tool cover -html=gover.coverprofile
+deps:
+	@go get
+	@go get -u github.com/golang/lint/golint
+	@go mod tidy
 
 fmt:
 	@gofmt -s -l $(SOURCES) | awk '{print $$1 ": file is not formatted correctly"} END{if(NR>0) {exit 1}}' 2>&1; \
@@ -18,16 +19,11 @@ fmt:
 		exit 1; \
 	fi
 
-get-deps:
-	@go get -u github.com/golang/lint/golint
-	@go get -u golang.org/x/tools/cmd/cover
-	@go get -u github.com/modocache/gover
-
 lint: fmt vet
-	@echo $(PACKAGES) | xargs -n 1 golint | awk '{print} END{if(NR>0) {exit 1}}' 2>&1; \
+	@echo $(PACKAGES) | xargs -n 1 $(GOPATH)/bin/golint | awk '{print} END{if(NR>0) {exit 1}}' 2>&1; \
 	if [ $$? -eq 1 ]; then \
-	  echo "!!! ERROR: Golint found stylistic issues"; \
-	  exit 1; \
+		echo "!!! ERROR: Golint found stylistic issues"; \
+		exit 1; \
 	fi
 
 test: lint
@@ -40,4 +36,4 @@ vet:
 		exit 1; \
 	fi
 
-.PHONY: all clean cover fmt get-deps lint test vet
+.PHONY: all clean deps fmt lint test vet

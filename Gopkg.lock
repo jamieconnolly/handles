@@ -3,31 +3,44 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:6ec050000e5b180ebeb4ee48e25374ef479efe58df7ef0c76aa0afcd666313a5"
   name = "github.com/jamieconnolly/mondas"
-  packages = [".","cli","commands","utils"]
-  revision = "fd60df8f79e416d36fee89bd34e06780f1604c8e"
+  packages = [
+    ".",
+    "cli",
+    "commands",
+    "utils",
+  ]
+  pruneopts = ""
+  revision = "417fa5294ca7199addecf87d66074e479bf18ab5"
 
 [[projects]]
-  branch = "master"
+  digest = "1:11b056b4421396ab14e384ab8ab8c2079b03f1e51aa5eb4d9b81f9e0d1aa8fbf"
   name = "github.com/kr/text"
   packages = ["."]
-  revision = "7cafcd837844e784b526369c9bce262804aebc60"
+  pruneopts = ""
+  revision = "e2ffdb16a802fe2bb95e2e35ff34f0e53aeef34f"
+  version = "v0.1.0"
 
 [[projects]]
-  branch = "master"
-  name = "github.com/renstrom/dedent"
+  digest = "1:67e1c0452400f76beb20d393d1af7ac30039188fbc4db2ad24babd57cd433b03"
+  name = "github.com/lithammer/dedent"
   packages = ["."]
-  revision = "020d11c3b9c0c7a3c2efcc8e5cf5b9ef7bcea21f"
+  pruneopts = ""
+  revision = "a1eba44eaecc89804e4b05ce2d17168eb353d524"
+  version = "v1.0.0"
 
 [[projects]]
   branch = "master"
+  digest = "1:ff0671f12ff98386398469e4b44453369fe164563f48ddb6c6b8ce6963379f97"
   name = "github.com/texttheater/golang-levenshtein"
   packages = ["levenshtein"]
-  revision = "1a14278c506abae7c17b3cb0b84ae863c7300454"
+  pruneopts = ""
+  revision = "d188e65d659ef53fcdb0691c12f1bba64928b649"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "7f7ba46f8b0b07e2e43620177e40c295e6bb8131f24d465abbae51ae97ac13a5"
+  input-imports = ["github.com/jamieconnolly/mondas"]
   solver-name = "gps-cdcl"
   solver-version = 1

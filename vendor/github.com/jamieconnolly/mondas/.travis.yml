@@ -1,15 +1,21 @@
 language: go
 
 go:
-  - 1.8
-  - 1.9
+  - "1.11"
 
-before_install:
-  - go get github.com/mattn/goveralls
+install: make deps
 
-install: make get-deps
+after_install:
+  - go get -u github.com/modocache/gover
+  - go get -u github.com/mattn/goveralls
 
-script:
-  - make
+after_success:
   - gover
   - goveralls -coverprofile=gover.coverprofile -service=travis-ci
+
+cache:
+  directories:
+    - $GOPATH/pkg
+
+env:
+  - GO111MODULE=on
