@@ -12,7 +12,7 @@ import (
 	"syscall"
 
 	"github.com/jamieconnolly/mondas/utils"
-	"github.com/renstrom/dedent"
+	"github.com/lithammer/dedent"
 	"github.com/texttheater/golang-levenshtein/levenshtein"
 )
 
