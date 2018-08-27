@@ -3,7 +3,7 @@ package main
 import "github.com/jamieconnolly/mondas"
 
 var (
-	Name string
+	Name    string
 	Version string
 )
 
