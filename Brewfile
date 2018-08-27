@@ -1,2 +1,1 @@
-brew "dep"
 brew "shellcheck"
