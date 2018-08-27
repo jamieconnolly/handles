@@ -22,14 +22,14 @@ if [ -f "Brewfile" ] && [ "$(uname -s)" = "Darwin" ]; then
   brew bundle check &>/dev/null || brew bundle install
 fi
 
-if [ -f "Gopkg.toml" ]; then
+if [ -f "go.mod" ]; then
   if ! goenv version-name &>/dev/null; then
     echo "==> Installing Go…"
     goenv install --skip-existing
   fi
 
   echo "==> Installing Go dependencies…"
-  dep ensure
+  go get
 fi
 
 if [ -f "package.json" ]; then
