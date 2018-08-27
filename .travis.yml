@@ -2,3 +2,12 @@ language: go
 
 go:
   - "1.11"
+
+install: make deps
+
+cache:
+  directories:
+    - $GOPATH/pkg
+
+env:
+  - GO111MODULE=on
