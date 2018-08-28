@@ -1,0 +1,16 @@
+#!/bin/bash
+# Usage: handles-sync [<target_dir>]
+# Summary: Fetch from upstream and update local branches for downloaded projects
+
+set -e
+
+TARGET_DIR="${1-${PROJECT_HOME}}"
+
+shopt -s nullglob
+for path in "$TARGET_DIR"/**/*/.git; do
+  path="${path%/*}"
+  echo "==> Syncing ${path#${PROJECT_HOME}/}…"
+  cd "$path"
+  hub sync || true
+done
+shopt -u nullglob
