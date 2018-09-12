@@ -9,8 +9,10 @@ TARGET_DIR="${1-${PROJECT_HOME}}"
 shopt -s nullglob
 for path in "$TARGET_DIR"/**/*/.git; do
   path="${path%/*}"
-  echo "==> Syncing ${path#${PROJECT_HOME}/}…"
   cd "$path"
-  hub sync || true
+
+  echo "==> Syncing ${path#${PROJECT_HOME}/}…"
+  hub sync 2>/dev/null || true
+  git branch -vv | grep '.*/.*: gone]' | awk '{print $1}' | xargs git branch -D || true
 done
 shopt -u nullglob
