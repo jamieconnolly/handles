@@ -20,7 +20,7 @@ else
   exit 1
 fi
 
-REPO_URL="git@github.com:${REPO_OWNER}/${REPO_NAME}"
+REPO_URL="git@github.com:${REPO_OWNER}/${REPO_NAME}.git"
 
 if git ls-remote "$REPO_URL" &>/dev/null; then
   TARGET_DIR="${PROJECT_HOME:?}/${REPO_OWNER}/${REPO_NAME}"
