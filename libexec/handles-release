@@ -6,16 +6,14 @@ set -e
 
 cd "$(git rev-parse --show-toplevel 2>/dev/null)"
 
+BRANCH="$(git symbolic-ref --short HEAD 2>/dev/null || true)"
 VERSION="$1"
 
 if [ -z "$VERSION" ]; then
   handles help release >&2
   exit 1
-elif [ -z "$(git symbolic-ref HEAD)" ]; then
+elif [ -z "$BRANCH" ]; then
   echo "!!! Error: your checkout isn't on a branch" >&2
-  exit 1
-elif [ "$(git symbolic-ref HEAD)" != "refs/heads/master" ]; then
-  echo "!!! Error: your checkout isn't on master" >&2
   exit 1
 elif ! git diff-index --quiet HEAD --; then
   echo "!!! Error: there are uncommitted changes" >&2
@@ -23,8 +21,8 @@ elif ! git diff-index --quiet HEAD --; then
 elif ! git fetch --quiet --tags origin; then
   echo "!!! Error: running 'git fetch' failed" >&2
   exit 1
-elif [ "$(git rev-list --count HEAD..origin/master)" != "0" ]; then
-  echo "!!! Error: there have been upstream changes on master" >&2
+elif [ "$(git rev-list --count HEAD.."${BRANCH}@{upstream}")" != "0" ]; then
+  echo "!!! Error: there have been upstream changes on the branch" >&2
   exit 1
 fi
 
@@ -58,13 +56,8 @@ elif [ -n "$PREV_VERSION" ] && [ "$(git rev-list --count "$PREV_VERSION"..HEAD)"
   exit 1
 fi
 
-if [ -f "package.json" ]; then
+if [ -f "package.json" ] && npm version --no-git-tag-version "${VERSION#v}" &>/dev/null; then
   echo "==> Bumping version…"
-
-  if ! npm version --no-git-tag-version "${VERSION#v}" &>/dev/null; then
-    echo "!!! Error: failed to bump version" >&2
-    exit 1
-  fi
 
   test -f "npm-shrinkwrap.json" && git add --update npm-shrinkwrap.json
   test -f "package-lock.json" && git add --update package-lock.json
@@ -100,22 +93,26 @@ if ! git diff-index --cached --quiet HEAD --; then
   fi
 fi
 
-echo "==> Tagging release…"
-if ! git tag -a -s "$VERSION" -m ":bookmark: Tag ${VERSION}" &>/dev/null; then
-  echo "!!! Error: failed to tag release" >&2
-  exit 1
+if [ "$(git rev-list --count "${BRANCH}@{upstream}"..HEAD)" != "0" ]; then
+  echo "==> Pushing branch to origin…"
+  if ! git push --set-upstream origin "$BRANCH" &>/dev/null; then
+    echo "!!! Error: failed to push to origin" >&2
+    exit 1
+  fi
 fi
 
-echo "==> Pushing master to origin…"
-if ! git push origin master &>/dev/null; then
-  echo "!!! Error: failed to push to master" >&2
-  exit 1
-fi
+if [ "$BRANCH" == "master" ]; then
+  echo "==> Tagging release…"
+  if ! git tag -a -s "$VERSION" -m ":bookmark: Tag ${VERSION}" &>/dev/null; then
+    echo "!!! Error: failed to tag release" >&2
+    exit 1
+  fi
 
-echo "==> Pushing tag to origin…"
-if ! git push origin "$VERSION" &>/dev/null; then
-  echo "!!! Error: failed to push tag to origin" >&2
-  exit 1
-fi
+  echo "==> Pushing tag to origin…"
+  if ! git push origin "$VERSION" &>/dev/null; then
+    echo "!!! Error: failed to push tag to origin" >&2
+    exit 1
+  fi
 
-echo "==> Successfully released ${VERSION}!"
+  echo "==> Successfully released ${VERSION}!"
+fi
