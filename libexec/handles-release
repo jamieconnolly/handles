@@ -7,6 +7,7 @@ set -e
 cd "$(git rev-parse --show-toplevel 2>/dev/null)"
 
 BRANCH="$(git symbolic-ref --short HEAD 2>/dev/null || true)"
+USE_EMOJI="$(git config release.emoji || true)"
 VERSION="$1"
 
 if [ -z "$VERSION" ]; then
@@ -71,9 +72,13 @@ if [ -f "CHANGELOG.md" ] && ! grep -q "^# ${VERSION}" CHANGELOG.md &>/dev/null; 
   printf "# %s - %s\\n\\n" "$VERSION" "$(date +"%d %b %Y")" > CHANGELOG.tmp
 
   if [ -n "$PREV_VERSION" ]; then
-    git log  --reverse --no-merges --format='- %s' "$PREV_VERSION"..HEAD | grep -v ":bookmark:"
+    git log  --reverse --no-merges --format='- %s' "$PREV_VERSION"..HEAD
   else
-    echo "- :tada: Initial release"
+    if [ "$USE_EMOJI" == "true" ]; then
+      echo "- :tada: Initial release"
+    else
+      echo "- Initial release"
+    fi
   fi >> CHANGELOG.tmp
 
   if [ -s "CHANGELOG.md" ]; then
@@ -86,8 +91,14 @@ if [ -f "CHANGELOG.md" ] && ! grep -q "^# ${VERSION}" CHANGELOG.md &>/dev/null; 
 fi
 
 if ! git diff-index --cached --quiet HEAD --; then
+  if [ "$USE_EMOJI" == "true" ]; then
+    COMMIT_MSG=":bookmark: Release ${VERSION}"
+  else
+    COMMIT_MSG="Release ${VERSION}"
+  fi
+
   echo "==> Preparing release…"
-  if ! git commit -m ":bookmark: Release ${VERSION}" &>/dev/null; then
+  if ! git commit -m "$COMMIT_MSG" &>/dev/null; then
     echo "!!! Error: failed to prepare release" >&2
     exit 1
   fi
@@ -102,8 +113,14 @@ if [ "$(git rev-list --count "${BRANCH}@{upstream}"..HEAD)" != "0" ]; then
 fi
 
 if [ "$BRANCH" == "master" ]; then
+  if [ "$USE_EMOJI" == "true" ]; then
+    RELEASE_MSG=":bookmark: Tag ${VERSION}"
+  else
+    RELEASE_MSG="Tag ${VERSION}"
+  fi
+
   echo "==> Tagging release…"
-  if ! git tag -a -s "$VERSION" -m ":bookmark: Tag ${VERSION}" &>/dev/null; then
+  if ! git tag -a -s "$VERSION" -m "$RELEASE_MSG" &>/dev/null; then
     echo "!!! Error: failed to tag release" >&2
     exit 1
   fi
